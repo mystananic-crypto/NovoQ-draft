@@ -1,1591 +1,503 @@
-/* =========================================================
-   LIFORA - COMPLETE WEBSITE JAVASCRIPT
-   Critical Patient | Non-Critical Patient | Emergency Contact
-========================================================= */
+/* =========================================
+   LIFORA INDIA — CORE SCRIPT
+========================================= */
+document.addEventListener("DOMContentLoaded", () => {
 
+  const STORAGE_KEY = "lifora_patient_profile_v1";
 
-/* =========================================================
-   HELPER FUNCTIONS
-========================================================= */
+  const state = {
+    hospitalName: "Sanjivani Multispeciality Hospital",
+    unitId: "ICU-BAY-04, Ahmedabad",
+    contactName: "Sunita Sharma (Spouse)",
+    contactPhone: "+91 98765 43210",
+    alertSent: false,
+    scanInterval: null
+  };
 
-function getElement(id) {
-    return document.getElementById(id);
-}
+  /* ---------- MODAL ELEMENTS ---------- */
+  const scannerModal = document.getElementById("scannerModal");
+  const qrModal = document.getElementById("qrModal");
+  const notifyModal = document.getElementById("notifyModal");
+  const fullFormModal = document.getElementById("fullFormModal");
 
-function scrollToSection(sectionId) {
-    const section = getElement(sectionId);
+  const scannerSelectionView = document.getElementById("scannerSelectionView");
+  const fingerprintScanScreen = document.getElementById("fingerprintScanScreen");
+  const irisScanScreen = document.getElementById("irisScanScreen");
+  const scanSuccessScreen = document.getElementById("scanSuccessScreen");
 
-    if (section) {
-        section.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
+  const fingerprintProgressBar = document.getElementById("fingerprintProgressBar");
+  const fingerprintPercentText = document.getElementById("fingerprintPercentText");
+  const irisProgressBar = document.getElementById("irisProgressBar");
+  const irisPercentText = document.getElementById("irisPercentText");
+
+  const notifyFormView = document.getElementById("notifyFormView");
+  const notifySuccessView = document.getElementById("notifySuccessView");
+
+  const dashAlertStatus = document.getElementById("dashAlertStatus");
+  const dashAlertIndicator = document.getElementById("dashAlertIndicator");
+  const dashRoomStatus = document.getElementById("dashRoomStatus");
+  const dashRoomIndicator = document.getElementById("dashRoomIndicator");
+  const wfStep2 = document.getElementById("wfStep2");
+  const wfStep3 = document.getElementById("wfStep3");
+  const wfStep4 = document.getElementById("wfStep4");
+
+  function openModal(modal){ if (modal) modal.classList.add("show-modal"); }
+  function closeModal(modal){
+    if (modal) modal.classList.remove("show-modal");
+    if (state.scanInterval){ clearInterval(state.scanInterval); state.scanInterval = null; }
+  }
+
+  document.querySelectorAll(".lifora-modal").forEach(modal => {
+    modal.addEventListener("click", (e) => {
+      if (e.target.classList.contains("modal-overlay") || e.target.classList.contains("close-modal")) {
+        closeModal(modal);
+      }
+    });
+  });
+
+  /* ---------- MOBILE NAV ---------- */
+  const navBurger = document.getElementById("navBurger");
+  const navLinksList = document.querySelector(".nav-links");
+  if (navBurger) {
+    navBurger.addEventListener("click", () => {
+      navLinksList.style.display = navLinksList.style.display === "flex" ? "none" : "flex";
+      if (navLinksList.style.display === "flex") {
+        navLinksList.style.cssText += "flex-direction:column;position:absolute;top:64px;left:0;right:0;background:#101F33;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.08);";
+      }
+    });
+  }
+
+  /* ---------- 3D TILT ON CARDS ---------- */
+  document.querySelectorAll(".tilt-card").forEach(card => {
+    card.addEventListener("mousemove", (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const rotateX = ((y / rect.height) - 0.5) * -10;
+      const rotateY = ((x / rect.width) - 0.5) * 10;
+      card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+    });
+    card.addEventListener("mouseleave", () => {
+      card.style.transform = "perspective(900px) rotateX(0) rotateY(0) translateZ(0)";
+    });
+  });
+
+  /* ---------- ID CARD MOUSE PARALLAX ---------- */
+  const idCard3D = document.getElementById("idCard3D");
+  const heroVisual = document.querySelector(".hero-visual");
+  if (idCard3D && heroVisual) {
+    heroVisual.addEventListener("mousemove", (e) => {
+      const rect = heroVisual.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) - 0.5;
+      const y = ((e.clientY - rect.top) / rect.height) - 0.5;
+      idCard3D.style.transform = `rotateY(${-18 + x * 20}deg) rotateX(${8 - y * 16}deg)`;
+    });
+    heroVisual.addEventListener("mouseleave", () => {
+      idCard3D.style.transform = "";
+    });
+  }
+
+  /* ---------- SCAN TRIGGERS ---------- */
+  [document.getElementById("heroScanBtn"), document.getElementById("openCriticalScanBtn"), document.getElementById("dashCriticalBtn")]
+    .forEach(btn => btn && btn.addEventListener("click", () => { resetScannerModal(); openModal(scannerModal); }));
+
+  [document.getElementById("openQRScanBtn"), document.getElementById("dashQRBtn")]
+    .forEach(btn => btn && btn.addEventListener("click", () => openModal(qrModal)));
+
+  [document.getElementById("openNotifyModalNav"), document.getElementById("openNotifyModalBtn"), document.getElementById("dashSendAlertBtn"), document.getElementById("notifyKinBtn")]
+    .forEach(btn => btn && btn.addEventListener("click", () => {
+      updateNotificationModalDetails();
+      notifyFormView.style.display = "block";
+      notifySuccessView.style.display = "none";
+      openModal(notifyModal);
+    }));
+
+  document.getElementById("closeScannerModal")?.addEventListener("click", () => closeModal(scannerModal));
+  document.getElementById("closeQRModal")?.addEventListener("click", () => closeModal(qrModal));
+  document.getElementById("closeNotifyModal")?.addEventListener("click", () => closeModal(notifyModal));
+  document.getElementById("closeFullFormModal")?.addEventListener("click", () => closeModal(fullFormModal));
+
+  /* ---------- FULL FORM OPEN TRIGGERS ---------- */
+  [document.getElementById("heroRegisterBtn"), document.getElementById("openFullFormBtn"), document.getElementById("openEditContactBtn")]
+    .forEach(btn => btn && btn.addEventListener("click", (e) => {
+      loadFormFromStorage();
+      const jumpToContacts = e.currentTarget.id === "openEditContactBtn";
+      goToTab(jumpToContacts ? 3 : 0);
+      document.getElementById("formSuccessView").style.display = "none";
+      document.getElementById("patientInfoForm").style.display = "block";
+      openModal(fullFormModal);
+    }));
+
+  document.getElementById("finishScanFormBtn")?.addEventListener("click", () => {
+    closeModal(scannerModal);
+    loadFormFromStorage();
+    goToTab(0);
+    document.getElementById("formSuccessView").style.display = "none";
+    document.getElementById("patientInfoForm").style.display = "block";
+    openModal(fullFormModal);
+  });
+
+  /* ---------- BIOMETRIC SCAN WORKFLOW ---------- */
+  const selectFingerprintBtn = document.getElementById("selectFingerprintBtn");
+  const selectIrisBtn = document.getElementById("selectIrisBtn");
+  const finishScanBtn = document.getElementById("finishScanBtn");
+
+  selectFingerprintBtn?.addEventListener("click", () => runScanProcess("fingerprint"));
+  selectIrisBtn?.addEventListener("click", () => runScanProcess("iris"));
+  finishScanBtn?.addEventListener("click", () => {
+    closeModal(scannerModal);
+    document.getElementById("profile")?.scrollIntoView({ behavior: "smooth" });
+  });
+
+  function resetScannerModal(){
+    scannerSelectionView.style.display = "block";
+    fingerprintScanScreen.style.display = "none";
+    irisScanScreen.style.display = "none";
+    scanSuccessScreen.style.display = "none";
+    fingerprintProgressBar.style.width = "0%";
+    irisProgressBar.style.width = "0%";
+    fingerprintPercentText.textContent = "0%";
+    irisPercentText.textContent = "0%";
+  }
+
+  function runScanProcess(type){
+    scannerSelectionView.style.display = "none";
+    let progress = 0;
+    if (type === "fingerprint") {
+      fingerprintScanScreen.style.display = "block";
+      state.scanInterval = setInterval(() => {
+        progress += 4;
+        fingerprintProgressBar.style.width = `${progress}%`;
+        fingerprintPercentText.textContent = `${progress}%`;
+        if (progress >= 100){ clearInterval(state.scanInterval); setTimeout(showScanSuccess, 400); }
+      }, 80);
+    } else {
+      irisScanScreen.style.display = "block";
+      state.scanInterval = setInterval(() => {
+        progress += 5;
+        irisProgressBar.style.width = `${progress}%`;
+        irisPercentText.textContent = `${progress}%`;
+        if (progress >= 100){ clearInterval(state.scanInterval); setTimeout(showScanSuccess, 400); }
+      }, 70);
     }
-}
+  }
 
+  function showScanSuccess(){
+    fingerprintScanScreen.style.display = "none";
+    irisScanScreen.style.display = "none";
+    scanSuccessScreen.style.display = "block";
+    populateScanSuccessCard();
+    [wfStep2, wfStep3].forEach(step => step && step.classList.add("active-workflow"));
+  }
 
-/* =========================================================
-   PAGE LOADER
-========================================================= */
+  function populateScanSuccessCard(){
+    const saved = getSavedProfile();
+    const name = saved.pFullName || "Rajesh Kumar Sharma";
+    const blood = saved.pBlood || "B+";
+    const allergies = saved.pAllergies || "Penicillin, Groundnuts";
+    const contact = saved.pPrimaryName ? `${saved.pPrimaryName}${saved.pPrimaryRel ? " (" + saved.pPrimaryRel + ")" : ""}` : "Sunita Sharma (Spouse)";
+    document.getElementById("scanRecordName").textContent = name;
+    document.getElementById("scanRecordBlood").textContent = bloodLabel(blood);
+    document.getElementById("scanRecordAllergies").textContent = allergies;
+    document.getElementById("scanRecordContact").textContent = contact;
+  }
 
-window.addEventListener("load", function () {
+  function bloodLabel(code){
+    const map = {"A+":"A Positive (A+)","A-":"A Negative (A-)","B+":"B Positive (B+)","B-":"B Negative (B-)","AB+":"AB Positive (AB+)","AB-":"AB Negative (AB-)","O+":"O Positive (O+)","O-":"O Negative (O-)"};
+    return map[code] || code;
+  }
 
-    const loader = getElement("pageLoader");
+  /* ---------- QR SCAN ---------- */
+  const simulateQRScanBtn = document.getElementById("simulateQRScanBtn");
+  simulateQRScanBtn?.addEventListener("click", () => {
+    simulateQRScanBtn.disabled = true;
+    simulateQRScanBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Reading Lifora QR Code...`;
+    setTimeout(() => {
+      simulateQRScanBtn.disabled = false;
+      simulateQRScanBtn.innerHTML = `<i class="fa-solid fa-camera"></i> Simulate Camera Scan`;
+      closeModal(qrModal);
+      resetScannerModal();
+      showScanSuccess();
+      openModal(scannerModal);
+    }, 1200);
+  });
 
-    if (loader) {
-        setTimeout(function () {
-            loader.classList.add("hide-loader");
+  /* ---------- SOS DISPATCH ---------- */
+  const confirmSendAlertBtn = document.getElementById("confirmSendAlertBtn");
+  const closeNotifySuccessBtn = document.getElementById("closeNotifySuccessBtn");
+
+  confirmSendAlertBtn?.addEventListener("click", () => {
+    confirmSendAlertBtn.disabled = true;
+    confirmSendAlertBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Broadcasting SOS...`;
+    setTimeout(() => {
+      confirmSendAlertBtn.disabled = false;
+      confirmSendAlertBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Confirm & Transmit SOS Alert`;
+      notifyFormView.style.display = "none";
+      notifySuccessView.style.display = "block";
+
+      state.alertSent = true;
+      if (dashAlertStatus){ dashAlertStatus.textContent = "DISPATCHED"; dashAlertStatus.style.color = "#17C98A"; }
+      if (dashAlertIndicator){ dashAlertIndicator.classList.remove("waiting"); dashAlertIndicator.classList.add("success-status"); }
+      if (dashRoomStatus){ dashRoomStatus.textContent = "BAY ALLOCATED"; dashRoomStatus.style.color = "#17C98A"; }
+      if (dashRoomIndicator){ dashRoomIndicator.classList.remove("waiting"); dashRoomIndicator.classList.add("success-status"); }
+      [wfStep2, wfStep3, wfStep4].forEach(step => step && step.classList.add("active-workflow"));
+    }, 1200);
+  });
+
+  closeNotifySuccessBtn?.addEventListener("click", () => closeModal(notifyModal));
+
+  function updateNotificationModalDetails(){
+    const modalHospName = document.getElementById("modalHospName");
+    const modalContactName = document.getElementById("modalContactName");
+    const saved = getSavedProfile();
+    const contact = saved.pPrimaryName ? `${saved.pPrimaryName} (+91 ${saved.pPrimaryPhone || "—"})` : `${state.contactName} (${state.contactPhone})`;
+    if (modalHospName) modalHospName.textContent = state.hospitalName;
+    if (modalContactName) modalContactName.textContent = contact;
+  }
+
+  /* ---------- HOSPITAL FACILITY FORM ---------- */
+  document.getElementById("hospitalConfigForm")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    state.hospitalName = document.getElementById("hospNameInput").value;
+    state.unitId = document.getElementById("hospUnitInput").value;
+    document.getElementById("contactHospital").textContent = state.hospitalName;
+    const btn = e.target.querySelector("button");
+    const original = btn.innerHTML;
+    btn.innerHTML = `<i class="fa-solid fa-check"></i> Station Info Updated`;
+    setTimeout(() => btn.innerHTML = original, 1600);
+  });
+
+  /* ==========================================================
+     FULL PATIENT INFORMATION FORM (Sections A–E) + localStorage
+  ========================================================== */
+  const TAB_COUNT = 5;
+  let currentTab = 0;
+  const formTabs = Array.from(document.querySelectorAll(".form-tab"));
+  const formPanels = Array.from(document.querySelectorAll(".form-panel"));
+  const formBackBtn = document.getElementById("formBackBtn");
+  const formNextBtn = document.getElementById("formNextBtn");
+  const formSubmitBtn = document.getElementById("formSubmitBtn");
+  const formProgressDots = document.getElementById("formProgressDots");
+
+  // Build progress dots
+  for (let i = 0; i < TAB_COUNT; i++){
+    const dot = document.createElement("span");
+    if (i === 0) dot.classList.add("dot-active");
+    formProgressDots.appendChild(dot);
+  }
+
+  function goToTab(index){
+    currentTab = Math.max(0, Math.min(TAB_COUNT - 1, index));
+    formTabs.forEach((tab, i) => tab.classList.toggle("active", i === currentTab));
+    formPanels.forEach((panel, i) => panel.classList.toggle("active", i === currentTab));
+    Array.from(formProgressDots.children).forEach((dot, i) => dot.classList.toggle("dot-active", i === currentTab));
+    formBackBtn.disabled = currentTab === 0;
+    const isLast = currentTab === TAB_COUNT - 1;
+    formNextBtn.style.display = isLast ? "none" : "flex";
+    formSubmitBtn.style.display = isLast ? "flex" : "none";
+  }
+
+  formTabs.forEach(tab => tab.addEventListener("click", () => goToTab(parseInt(tab.dataset.tab, 10))));
+  formNextBtn.addEventListener("click", () => goToTab(currentTab + 1));
+  formBackBtn.addEventListener("click", () => goToTab(currentTab - 1));
+
+  // GPS detection (Section E)
+  const detectGPSBtn = document.getElementById("detectGPSBtn");
+  detectGPSBtn?.addEventListener("click", () => {
+    const gpsInput = document.getElementById("pGPS");
+    if (!navigator.geolocation){
+      gpsInput.value = "Location services unavailable on this device";
+      return;
+    }
+    detectGPSBtn.disabled = true;
+    detectGPSBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Locating...`;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        gpsInput.value = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
+        detectGPSBtn.disabled = false;
+        detectGPSBtn.innerHTML = `<i class="fa-solid fa-location-crosshairs"></i> Detect`;
+      },
+      () => {
+        gpsInput.value = "Permission denied — enter address manually";
+        detectGPSBtn.disabled = false;
+        detectGPSBtn.innerHTML = `<i class="fa-solid fa-location-crosshairs"></i> Detect`;
+      }
+    );
+  });
+
+  // Aadhaar auto-mask formatting
+  const aadhaarInput = document.getElementById("pAadhaar");
+  aadhaarInput?.addEventListener("input", () => {
+    let digits = aadhaarInput.value.replace(/\D/g, "").slice(0, 12);
+    aadhaarInput.value = digits.replace(/(\d{4})(?=\d)/g, "$1 ");
+  });
+
+  const FIELD_IDS = [
+    "pFullName","pPOB","pDOBDay","pDOBMonth","pDOBYear","pGender","pStatus","pBlood","pPhone","pCity","pAddress","pPostcode",
+    "pConditions","pAllergies","pMeds","pSurgeries",
+    "pHeight","pWeight","pDisability","pPregnancy",
+    "pPrimaryName","pPrimaryRel","pPrimaryPhone","pSecondaryName","pSecondaryRel","pSecondaryPhone",
+    "pGPS","pHomeAddress","pAadhaar","pInsurance"
+  ];
+
+  function getSavedProfile(){
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(err){ return {}; }
+  }
+
+  function loadFormFromStorage(){
+    const saved = getSavedProfile();
+    FIELD_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && saved[id] !== undefined) el.value = saved[id];
+    });
+  }
+
+  document.getElementById("patientInfoForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = {};
+    FIELD_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) data[id] = el.value;
+    });
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch(err) { /* local storage unavailable — continue silently */ }
+
+    applyProfileToPage(data);
+
+    document.getElementById("patientInfoForm").style.display = "none";
+    document.getElementById("formSuccessView").style.display = "block";
+  });
+
+  document.getElementById("closeFullFormSuccessBtn")?.addEventListener("click", () => {
+    closeModal(fullFormModal);
+    document.getElementById("profile")?.scrollIntoView({ behavior: "smooth" });
+  });
+
+  function applyProfileToPage(data){
+    const heroCardName = document.getElementById("heroCardName");
+    if (data.pFullName){
+      document.getElementById("profName").textContent = data.pFullName;
+      if (heroCardName){
+        heroCardName.textContent = data.pFullName;
+        heroCardName.classList.remove("masked");
+      }
+    }
+    if (data.pBlood){
+      const label = bloodLabel(data.pBlood);
+      document.getElementById("profBlood").textContent = label;
+      const heroCardBlood = document.getElementById("heroCardBlood");
+      if (heroCardBlood) heroCardBlood.textContent = label;
+    }
+    if (data.pAllergies) document.getElementById("profAllergies").textContent = data.pAllergies;
+    if (data.pConditions) document.getElementById("profConditions").textContent = data.pConditions;
+    if (data.pMeds) document.getElementById("profMeds").textContent = data.pMeds;
+    if (data.pPrimaryName){
+      const label = `${data.pPrimaryName}${data.pPrimaryRel ? " (" + data.pPrimaryRel + ")" : ""}`;
+      document.getElementById("contactName").textContent = label;
+      state.contactName = label;
+    }
+    if (data.pPrimaryPhone){
+      const phoneLabel = `+91 ${data.pPrimaryPhone}`;
+      document.getElementById("contactPhone").textContent = phoneLabel;
+      state.contactPhone = phoneLabel;
+      const heroCardPhone = document.getElementById("heroCardPhone");
+      if (heroCardPhone) heroCardPhone.textContent = phoneLabel;
+    }
+  }
+
+  // Pre-fill saved profile onto the live page on load
+  (function hydrateFromStorage(){
+    const saved = getSavedProfile();
+    if (Object.keys(saved).length) applyProfileToPage(saved);
+  })();
+
+  /* ---------- INTERACTIVE CASE SIMULATION ---------- */
+  const startSimBtn = document.getElementById("startSimBtn");
+  const simChooseBiometric = document.getElementById("simChooseBiometric");
+  const simChooseQR = document.getElementById("simChooseQR");
+  const resetSimBtn = document.getElementById("resetSimBtn");
+
+  const simStep1View = document.getElementById("simStep1View");
+  const simStep2View = document.getElementById("simStep2View");
+  const simStep3View = document.getElementById("simStep3View");
+  const simStep4View = document.getElementById("simStep4View");
+
+  const simStatusText = document.getElementById("simStatusText");
+  const simStatusBadge = document.getElementById("simStatusBadge");
+  const simProgressBar = document.getElementById("simProgressBar");
+
+  const simStep1Indicator = document.getElementById("simStep1Indicator");
+  const simStep2Indicator = document.getElementById("simStep2Indicator");
+  const simStep3Indicator = document.getElementById("simStep3Indicator");
+  const simStep4Indicator = document.getElementById("simStep4Indicator");
+
+  const simLine1 = document.getElementById("simLine1");
+  const simLine2 = document.getElementById("simLine2");
+  const simLine3 = document.getElementById("simLine3");
+
+  startSimBtn?.addEventListener("click", () => {
+    simStep1View.style.display = "none";
+    simStep2View.style.display = "block";
+    simStatusText.textContent = "Step 2: Patient Triage";
+    simStatusBadge.className = "simulation-status active-simulation-status";
+    simStep2Indicator.classList.add("active");
+    simLine1.classList.add("completed-line");
+  });
+
+  simChooseBiometric?.addEventListener("click", () => runSimProgress("biometric"));
+  simChooseQR?.addEventListener("click", () => runSimProgress("qr"));
+
+  function runSimProgress(type){
+    simStep2View.style.display = "none";
+    simStep3View.style.display = "block";
+    simStatusText.textContent = "Step 3: Transmitting Vitals";
+    simStep3Indicator.classList.add("active");
+    simLine2.classList.add("completed-line");
+
+    const dispatchText = document.getElementById("simDispatchText");
+    if (dispatchText){
+      dispatchText.textContent = type === "biometric"
+        ? "Scanning fingerprint biometric pattern & matching with Lifora Central Health Cloud..."
+        : "Decrypting patient QR health card & requesting consent token...";
+    }
+
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+      if (simProgressBar) simProgressBar.style.width = `${progress}%`;
+      if (progress >= 100){
+        clearInterval(interval);
+        setTimeout(() => {
+          simStep3View.style.display = "none";
+          simStep4View.style.display = "block";
+          simStatusText.textContent = "Completed";
+          simStatusBadge.className = "simulation-status completed-simulation-status";
+          simStep4Indicator.classList.add("active", "completed");
+          simLine3.classList.add("completed-line");
         }, 500);
-    }
+      }
+    }, 150);
+  }
+
+  resetSimBtn?.addEventListener("click", () => {
+    simStep4View.style.display = "none";
+    simStep1View.style.display = "block";
+    simStatusText.textContent = "Ready to Begin";
+    simStatusBadge.className = "simulation-status waiting-status";
+    [simStep2Indicator, simStep3Indicator, simStep4Indicator].forEach(ind => ind.classList.remove("active", "completed"));
+    [simLine1, simLine2, simLine3].forEach(line => line.classList.remove("completed-line"));
+    if (simProgressBar) simProgressBar.style.width = "0%";
+  });
+
+  /* ---------- NAVBAR SHRINK ON SCROLL ---------- */
+  const navbar = document.getElementById("navbar");
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 30) navbar.style.boxShadow = "0 10px 30px -18px rgba(0,0,0,.6)";
+    else navbar.style.boxShadow = "none";
+  });
 
 });
-
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-function toggleMobileMenu() {
-
-    const navLinks = getElement("navLinks");
-
-    if (navLinks) {
-        navLinks.classList.toggle("show-nav");
-    }
-
-}
-
-
-/* =========================================================
-   PATIENT FORM / MODAL FUNCTIONS
-========================================================= */
-
-function openPatientForm(patientType) {
-
-    const modal = getElement("patientFormModal");
-
-    if (!modal) {
-        console.log("Patient form modal not found.");
-        return;
-    }
-
-    const title = getElement("patientFormTitle");
-
-    if (title) {
-        title.innerText =
-            patientType === "critical"
-                ? "Critical Patient Emergency Information"
-                : "Non-Critical Patient Information";
-    }
-
-    modal.classList.add("show-modal");
-    document.body.style.overflow = "hidden";
-}
-
-
-function closePatientForm() {
-
-    const modal = getElement("patientFormModal");
-
-    if (modal) {
-        modal.classList.remove("show-modal");
-    }
-
-    document.body.style.overflow = "auto";
-}
-
-
-/* =========================================================
-   CRITICAL PATIENT
-========================================================= */
-
-function openCriticalPatient() {
-
-    const modal = getElement("scannerModal");
-
-    if (!modal) {
-        console.log("Scanner modal not found.");
-        return;
-    }
-
-    modal.classList.add("show-modal");
-    document.body.style.overflow = "hidden";
-
-    const scannerTitle = getElement("scannerTitle");
-
-    if (scannerTitle) {
-        scannerTitle.innerText =
-            "Choose Identification Method";
-    }
-
-    const scannerContent = getElement("scannerContent");
-
-    if (scannerContent) {
-
-        scannerContent.innerHTML = `
-
-            <div class="scanner-choice-container">
-
-                <p class="scanner-description">
-                    Select a secure identification method for
-                    the unconscious or critical patient.
-                </p>
-
-                <div class="scanner-choice-buttons">
-
-                    <button
-                        type="button"
-                        class="scanner-choice biometric-choice"
-                        onclick="startTenSecondScan('biometric')"
-                    >
-
-                        <i class="fa-solid fa-fingerprint"></i>
-
-                        <strong>Biometric Scan</strong>
-
-                        <span>
-                            Verify patient identity using biometric data
-                        </span>
-
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="scanner-choice iris-choice"
-                        onclick="startTenSecondScan('iris')"
-                    >
-
-                        <i class="fa-solid fa-eye"></i>
-
-                        <strong>Iris Scan</strong>
-
-                        <span>
-                            Verify patient identity using iris recognition
-                        </span>
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-}
-
-
-function closeScannerModal() {
-
-    const modal = getElement("scannerModal");
-
-    if (modal) {
-        modal.classList.remove("show-modal");
-    }
-
-    document.body.style.overflow = "auto";
-}
-
-
-/* =========================================================
-   10 SECOND BIOMETRIC / IRIS SCAN
-========================================================= */
-
-let scanTimer = null;
-
-
-function startTenSecondScan(scanType) {
-
-    const scannerContent = getElement("scannerContent");
-
-    if (!scannerContent) return;
-
-    const icon =
-        scanType === "iris"
-            ? "fa-eye"
-            : "fa-fingerprint";
-
-    const title =
-        scanType === "iris"
-            ? "Iris Scanner Verification"
-            : "Biometric Identification";
-
-
-    scannerContent.innerHTML = `
-
-        <div class="lifora-scanning-screen">
-
-            <div class="scan-animation">
-
-                <div class="scan-circle">
-
-                    <i class="fa-solid ${icon}"></i>
-
-                </div>
-
-            </div>
-
-            <span class="scan-label">
-                SECURE IDENTIFICATION IN PROGRESS
-            </span>
-
-            <h3>${title}</h3>
-
-            <p>
-                Lifora is securely scanning the patient.
-                Please wait while identification is completed.
-            </p>
-
-            <div class="scan-countdown">
-
-                <span id="scanSeconds">10</span>
-
-                <small>seconds remaining</small>
-
-            </div>
-
-            <div class="scan-progress-container">
-
-                <div
-                    id="scanProgress"
-                    class="scan-progress"
-                    style="width: 0%;"
-                ></div>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    let seconds = 10;
-
-    const countdown = getElement("scanSeconds");
-    const progress = getElement("scanProgress");
-
-
-    clearInterval(scanTimer);
-
-
-    scanTimer = setInterval(function () {
-
-        seconds--;
-
-        if (countdown) {
-            countdown.innerText = seconds;
-        }
-
-        if (progress) {
-
-            const percentage =
-                ((10 - seconds) / 10) * 100;
-
-            progress.style.width =
-                percentage + "%";
-        }
-
-
-        if (seconds <= 0) {
-
-            clearInterval(scanTimer);
-
-            scanCompleted(scanType);
-        }
-
-    }, 1000);
-
-}
-
-
-function scanCompleted(scanType) {
-
-    const scannerContent = getElement("scannerContent");
-
-    if (!scannerContent) return;
-
-
-    const scanName =
-        scanType === "iris"
-            ? "Iris"
-            : "Biometric";
-
-
-    scannerContent.innerHTML = `
-
-        <div class="scan-success-screen">
-
-            <div class="scan-success-icon">
-
-                <i class="fa-solid fa-circle-check"></i>
-
-            </div>
-
-            <h3>${scanName} Identity Verified</h3>
-
-            <p>
-                Patient identification was completed successfully.
-                Opening the emergency information form...
-            </p>
-
-        </div>
-
-    `;
-
-
-    setTimeout(function () {
-
-        closeScannerModal();
-
-        openPatientForm("critical");
-
-    }, 1500);
-
-}
-
-
-/* =========================================================
-   NON-CRITICAL PATIENT
-========================================================= */
-
-function openNonCriticalPatient() {
-
-    openPatientForm("noncritical");
-
-}
-
-
-/* =========================================================
-   SAVE PATIENT INFORMATION
-   DATA IS SAVED IN BROWSER LOCAL STORAGE
-========================================================= */
-
-function savePatientInformation() {
-
-    const form = getElement("patientInformationForm");
-
-    if (!form) {
-        alert("Patient form was not found.");
-        return;
-    }
-
-
-    const formData = new FormData(form);
-
-    const patientData = {};
-
-
-    formData.forEach(function (value, key) {
-
-        patientData[key] = value;
-
-    });
-
-
-    patientData.savedAt =
-        new Date().toLocaleString();
-
-
-    localStorage.setItem(
-        "liforaPatientInformation",
-        JSON.stringify(patientData)
-    );
-
-
-    updateEmergencyStatus(
-        "Identified",
-        "Available",
-        "Saved"
-    );
-
-
-    alert(
-        "Patient information has been saved successfully."
-    );
-
-
-    closePatientForm();
-
-}
-
-
-function loadPatientInformation() {
-
-    const savedData =
-        localStorage.getItem(
-            "liforaPatientInformation"
-        );
-
-
-    if (!savedData) return;
-
-
-    let patientData;
-
-
-    try {
-
-        patientData =
-            JSON.parse(savedData);
-
-    } catch (error) {
-
-        console.log(
-            "Unable to load patient information."
-        );
-
-        return;
-    }
-
-
-    const form = getElement(
-        "patientInformationForm"
-    );
-
-
-    if (!form) return;
-
-
-    Object.keys(patientData).forEach(
-        function (key) {
-
-            const field =
-                form.querySelector(
-                    `[name="${key}"]`
-                );
-
-            if (field) {
-
-                field.value =
-                    patientData[key];
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   EMERGENCY STATUS
-========================================================= */
-
-function updateEmergencyStatus(
-    identification,
-    medical,
-    contact
-) {
-
-    const identificationStatus =
-        getElement("identificationStatus");
-
-    const medicalStatus =
-        getElement("medicalStatus");
-
-    const contactStatus =
-        getElement("contactStatus");
-
-
-    if (
-        identificationStatus &&
-        identification
-    ) {
-
-        identificationStatus.innerText =
-            identification;
-
-    }
-
-
-    if (medicalStatus && medical) {
-
-        medicalStatus.innerText =
-            medical;
-
-    }
-
-
-    if (contactStatus && contact) {
-
-        contactStatus.innerText =
-            contact;
-
-    }
-
-}
-
-
-/* =========================================================
-   EMERGENCY CONTACT
-========================================================= */
-
-function notifyEmergencyContact() {
-
-    const notification =
-        getElement("notificationStatus");
-
-
-    if (notification) {
-
-        notification.innerHTML = `
-
-            <i class="fa-solid fa-spinner fa-spin"></i>
-            Sending emergency notification...
-
-        `;
-
-    }
-
-
-    setTimeout(function () {
-
-        if (notification) {
-
-            notification.innerHTML = `
-
-                <i class="fa-solid fa-circle-check"></i>
-                Emergency contact notified successfully.
-                Hospital name and location have been shared.
-
-            `;
-
-        }
-
-
-        updateEmergencyStatus(
-            "Identified",
-            "Available",
-            "Notified"
-        );
-
-    }, 1800);
-
-}
-
-
-function openContactModal() {
-
-    const modal =
-        getElement("contactModal");
-
-    if (modal) {
-
-        modal.classList.add(
-            "show-modal"
-        );
-
-    }
-
-}
-
-
-function closeContactModal() {
-
-    const modal =
-        getElement("contactModal");
-
-    if (modal) {
-
-        modal.classList.remove(
-            "show-modal"
-        );
-
-    }
-
-}
-
-
-function saveEmergencyContact() {
-
-    const contactName =
-        getElement("contactName");
-
-    const contactPhone =
-        getElement("contactPhone");
-
-
-    const savedName =
-        contactName &&
-        contactName.value.trim() !== ""
-
-            ? contactName.value.trim()
-
-            : "Emergency Contact";
-
-
-    const savedPhone =
-        contactPhone &&
-        contactPhone.value.trim() !== ""
-
-            ? contactPhone.value.trim()
-
-            : "Contact Number Not Added";
-
-
-    localStorage.setItem(
-        "liforaEmergencyContactName",
-        savedName
-    );
-
-
-    localStorage.setItem(
-        "liforaEmergencyContactPhone",
-        savedPhone
-    );
-
-
-    const displayName =
-        getElement("displayContactName");
-
-    const displayPhone =
-        getElement("displayContactPhone");
-
-
-    if (displayName) {
-
-        displayName.innerText =
-            savedName;
-
-    }
-
-
-    if (displayPhone) {
-
-        displayPhone.innerText =
-            savedPhone;
-
-    }
-
-
-    closeContactModal();
-
-}
-
-
-/* =========================================================
-   HOSPITAL INFORMATION
-========================================================= */
-
-function saveHospitalInformation() {
-
-    const hospitalName =
-        getElement("hospitalNameInput");
-
-    const hospitalLocation =
-        getElement("hospitalLocationInput");
-
-
-    const savedHospital =
-        hospitalName &&
-        hospitalName.value.trim() !== ""
-
-            ? hospitalName.value.trim()
-
-            : "Selected Hospital";
-
-
-    const savedLocation =
-        hospitalLocation &&
-        hospitalLocation.value.trim() !== ""
-
-            ? hospitalLocation.value.trim()
-
-            : "Hospital Location";
-
-
-    localStorage.setItem(
-        "liforaHospitalName",
-        savedHospital
-    );
-
-
-    localStorage.setItem(
-        "liforaHospitalLocation",
-        savedLocation
-    );
-
-
-    const hospitalDisplay =
-        getElement("hospitalNameDisplay");
-
-    const locationDisplay =
-        getElement("hospitalLocationDisplay");
-
-
-    if (hospitalDisplay) {
-
-        hospitalDisplay.innerText =
-            savedHospital;
-
-    }
-
-
-    if (locationDisplay) {
-
-        locationDisplay.innerText =
-            savedLocation;
-
-    }
-
-
-    alert(
-        "Hospital details saved successfully."
-    );
-
-}
-
-
-/* THIS FUNCTION SUPPORTS
-   THE DASHBOARD HOSPITAL FIELDS */
-
-function saveHospitalDetails() {
-
-    const dashboardName =
-        getElement("dashboardHospitalName");
-
-    const dashboardLocation =
-        getElement("dashboardHospitalLocation");
-
-
-    const savedHospital =
-        dashboardName &&
-        dashboardName.value.trim() !== ""
-
-            ? dashboardName.value.trim()
-
-            : "Selected Hospital";
-
-
-    const savedLocation =
-        dashboardLocation &&
-        dashboardLocation.value.trim() !== ""
-
-            ? dashboardLocation.value.trim()
-
-            : "Hospital Location";
-
-
-    localStorage.setItem(
-        "liforaHospitalName",
-        savedHospital
-    );
-
-
-    localStorage.setItem(
-        "liforaHospitalLocation",
-        savedLocation
-    );
-
-
-    alert(
-        "Hospital details saved successfully."
-    );
-
-}
-
-
-/* =========================================================
-   EMERGENCY CONSENT
-========================================================= */
-
-function startConsentProcess() {
-
-    const consentStatus =
-        getElement("consentStatus");
-
-
-    if (consentStatus) {
-
-        consentStatus.innerHTML = `
-
-            <i class="fa-solid fa-file-signature"></i>
-
-            Consent process initiated.
-
-            The emergency contact has been informed about
-            the hospital and can proceed for written consent.
-
-        `;
-
-    }
-
-
-    scrollToSection(
-        "consentSection"
-    );
-
-}
-
-
-/* =========================================================
-   EMERGENCY SIMULATION
-========================================================= */
-
-let currentSimulationType = "";
-
-
-function startEmergencySimulation() {
-
-    const screen =
-        getElement("simulationScreen");
-
-    const title =
-        getElement("simulationCaseTitle");
-
-    const status =
-        getElement("simulationStatus");
-
-
-    if (!screen) return;
-
-
-    if (title) {
-
-        title.innerText =
-            "Patient Type Selection";
-
-    }
-
-
-    if (status) {
-
-        status.className =
-            "simulation-status active-simulation-status";
-
-        status.innerHTML = `
-            <span></span>
-            Case In Progress
-        `;
-
-    }
-
-
-    updateSimulationStep(1);
-
-
-    screen.innerHTML = `
-
-        <div class="simulation-choice">
-
-            <span>STEP 01 OF 05</span>
-
-            <h3>Select Patient Condition</h3>
-
-            <p>
-                Choose the appropriate identification process
-                according to the patient's condition.
-            </p>
-
-
-            <div class="patient-choice-buttons">
-
-
-                <button
-                    class="patient-choice-btn critical-choice"
-                    onclick="simulateCriticalPatient()"
-                >
-
-                    <div class="choice-icon">
-
-                        <i class="fa-solid fa-heart-pulse"></i>
-
-                    </div>
-
-                    <strong>
-                        Critical / Unconscious Patient
-                    </strong>
-
-                    <small>
-                        Biometric and iris identification
-                        for rapid emergency information access.
-                    </small>
-
-                </button>
-
-
-                <button
-                    class="patient-choice-btn noncritical-choice"
-                    onclick="simulateNonCriticalPatient()"
-                >
-
-                    <div class="choice-icon">
-
-                        <i class="fa-solid fa-qrcode"></i>
-
-                    </div>
-
-                    <strong>
-                        Non-Critical Patient
-                    </strong>
-
-                    <small>
-                        Secure QR identification for faster
-                        emergency documentation.
-                    </small>
-
-                </button>
-
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-
-function simulateCriticalPatient() {
-
-    currentSimulationType = "critical";
-
-    runIdentificationScan(
-        "Critical Patient",
-        "fa-fingerprint",
-        "Biometric and Iris Identification"
-    );
-
-}
-
-
-function simulateNonCriticalPatient() {
-
-    currentSimulationType = "noncritical";
-
-    runIdentificationScan(
-        "Non-Critical Patient",
-        "fa-qrcode",
-        "Secure QR Identification"
-    );
-
-}
-
-
-function runIdentificationScan(
-    patientType,
-    icon,
-    scanMethod
-) {
-
-    const screen =
-        getElement("simulationScreen");
-
-    const title =
-        getElement("simulationCaseTitle");
-
-
-    if (!screen) return;
-
-
-    if (title) {
-
-        title.innerText =
-            patientType;
-
-    }
-
-
-    updateSimulationStep(2);
-
-
-    screen.innerHTML = `
-
-        <div class="scanning-screen">
-
-            <div class="scanner-circle">
-
-                <i class="fa-solid ${icon}"></i>
-
-            </div>
-
-
-            <span class="verified-text">
-
-                IDENTIFICATION IN PROGRESS
-
-            </span>
-
-
-            <h3>${scanMethod}</h3>
-
-
-            <p>
-
-                Lifora is securely processing the patient
-                identification request.
-
-            </p>
-
-        </div>
-
-    `;
-
-
-    setTimeout(function () {
-
-        showIdentificationSuccess(
-            patientType
-        );
-
-    }, 2200);
-
-}
-
-
-function showIdentificationSuccess(
-    patientType
-) {
-
-    const screen =
-        getElement("simulationScreen");
-
-
-    if (!screen) return;
-
-
-    screen.innerHTML = `
-
-        <div class="simulation-result">
-
-            <div class="simulation-result-icon">
-
-                <i class="fa-solid fa-circle-check"></i>
-
-            </div>
-
-
-            <span class="verified-text">
-
-                IDENTITY VERIFIED
-
-            </span>
-
-
-            <h3>
-
-                Patient Successfully Identified
-
-            </h3>
-
-
-            <p>
-
-                Essential emergency information is now available
-                to authorized healthcare personnel.
-
-            </p>
-
-
-            <button
-                class="simulation-next-btn"
-                onclick="simulateMedicalAccess()"
-            >
-
-                Access Emergency Information
-
-                <i class="fa-solid fa-arrow-right"></i>
-
-            </button>
-
-        </div>
-
-    `;
-
-}
-
-
-function simulateMedicalAccess() {
-
-    const screen =
-        getElement("simulationScreen");
-
-
-    if (!screen) return;
-
-
-    updateSimulationStep(3);
-
-
-    screen.innerHTML = `
-
-        <div class="simulation-result">
-
-            <div class="simulation-result-icon">
-
-                <i class="fa-solid fa-file-medical"></i>
-
-            </div>
-
-
-            <span class="verified-text">
-
-                AUTHORIZED ACCESS
-
-            </span>
-
-
-            <h3>
-
-                Emergency Profile Retrieved
-
-            </h3>
-
-
-            <p>
-
-                Essential medical information such as blood group,
-                allergies, medical history and emergency contact
-                details can now be reviewed.
-
-            </p>
-
-
-            <button
-                class="simulation-next-btn"
-                onclick="simulateEmergencyNotification()"
-            >
-
-                Notify Emergency Contact
-
-                <i class="fa-solid fa-bell"></i>
-
-            </button>
-
-        </div>
-
-    `;
-
-}
-
-
-function simulateEmergencyNotification() {
-
-    const screen =
-        getElement("simulationScreen");
-
-
-    if (!screen) return;
-
-
-    updateSimulationStep(4);
-
-
-    const hospitalName =
-        localStorage.getItem(
-            "liforaHospitalName"
-        ) || "Selected Hospital";
-
-
-    const hospitalLocation =
-        localStorage.getItem(
-            "liforaHospitalLocation"
-        ) || "Hospital Location";
-
-
-    screen.innerHTML = `
-
-        <div class="simulation-result">
-
-            <div class="simulation-result-icon">
-
-                <i class="fa-solid fa-paper-plane"></i>
-
-            </div>
-
-
-            <span class="verified-text">
-
-                EMERGENCY ALERT SENT
-
-            </span>
-
-
-            <h3>
-
-                Emergency Contact Notified
-
-            </h3>
-
-
-            <p>
-
-                The emergency contact has received the
-                hospital information.
-
-            </p>
-
-
-            <div class="simulation-hospital-preview">
-
-                <strong>
-
-                    <i class="fa-solid fa-hospital"></i>
-
-                    ${hospitalName}
-
-                </strong>
-
-
-                <span>
-
-                    <i class="fa-solid fa-location-dot"></i>
-
-                    ${hospitalLocation}
-
-                </span>
-
-            </div>
-
-
-            <button
-                class="simulation-next-btn"
-                onclick="simulateConsentStep()"
-            >
-
-                Continue to Consent Process
-
-                <i class="fa-solid fa-file-signature"></i>
-
-            </button>
-
-        </div>
-
-    `;
-
-}
-
-
-function simulateConsentStep() {
-
-    const screen =
-        getElement("simulationScreen");
-
-    const status =
-        getElement("simulationStatus");
-
-
-    if (!screen) return;
-
-
-    updateSimulationStep(5);
-
-
-    if (status) {
-
-        status.className =
-            "simulation-status completed-simulation-status";
-
-        status.innerHTML = `
-            <span></span>
-            Workflow Completed
-        `;
-
-    }
-
-
-    screen.innerHTML = `
-
-        <div class="simulation-result">
-
-            <div class="simulation-result-icon">
-
-                <i class="fa-solid fa-file-signature"></i>
-
-            </div>
-
-
-            <span class="verified-text">
-
-                CONSENT PROCESS INITIATED
-
-            </span>
-
-
-            <h3>
-
-                Emergency Contact Can Reach the Hospital
-
-            </h3>
-
-
-            <p>
-
-                The emergency contact has received the hospital
-                name and location and can proceed with the
-                required written consent process.
-
-            </p>
-
-
-            <button
-                class="simulation-next-btn"
-                onclick="resetEmergencySimulation()"
-            >
-
-                <i class="fa-solid fa-rotate-right"></i>
-
-                Start New Emergency Case
-
-            </button>
-
-        </div>
-
-    `;
-
-}
-
-
-function updateSimulationStep(
-    currentStep
-) {
-
-    for (
-        let i = 1;
-        i <= 5;
-        i++
-    ) {
-
-        const step =
-            getElement("simStep" + i);
-
-
-        if (!step) continue;
-
-
-        step.classList.remove(
-            "active",
-            "completed"
-        );
-
-
-        if (i < currentStep) {
-
-            step.classList.add(
-                "completed"
-            );
-
-        } else if (i === currentStep) {
-
-            step.classList.add(
-                "active"
-            );
-
-        }
-
-
-        if (i < 5) {
-
-            const line =
-                getElement("simLine" + i);
-
-
-            if (!line) continue;
-
-
-            if (i < currentStep) {
-
-                line.classList.add(
-                    "completed-line"
-                );
-
-            } else {
-
-                line.classList.remove(
-                    "completed-line"
-                );
-
-            }
-
-        }
-
-    }
-
-}
-
-
-function resetEmergencySimulation() {
-
-    const screen =
-        getElement("simulationScreen");
-
-    const title =
-        getElement("simulationCaseTitle");
-
-    const status =
-        getElement("simulationStatus");
-
-
-    if (!screen) return;
-
-
-    currentSimulationType = "";
-
-
-    if (title) {
-
-        title.innerText =
-            "No Active Case";
-
-    }
-
-
-    if (status) {
-
-        status.className =
-            "simulation-status waiting-status";
-
-        status.innerHTML = `
-            <span></span>
-            Waiting to Start
-        `;
-
-    }
-
-
-    updateSimulationStep(1);
-
-
-    screen.innerHTML = `
-
-        <div class="simulation-welcome">
-
-            <div class="simulation-main-icon">
-
-                <i class="fa-solid fa-heart-pulse"></i>
-
-            </div>
-
-
-            <span>
-
-                READY FOR DEMONSTRATION
-
-            </span>
-
-
-            <h3>
-
-                Start a New Emergency Case
-
-            </h3>
-
-
-            <p>
-
-                Demonstrate how Lifora reduces delays in
-                emergency identification, documentation and
-                emergency contact notification.
-
-            </p>
-
-
-            <button
-                class="start-simulation-btn"
-                onclick="startEmergencySimulation()"
-            >
-
-                <i class="fa-solid fa-play"></i>
-
-                Start Emergency Case
-
-            </button>
-
-        </div>
-
-    `;
-
-}
-
-
-/* =========================================================
-   LOAD SAVED INFORMATION
-========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        const savedName =
-            localStorage.getItem(
-                "liforaEmergencyContactName"
-            );
-
-
-        const savedPhone =
-            localStorage.getItem(
-                "liforaEmergencyContactPhone"
-            );
-
-
-        const savedHospital =
-            localStorage.getItem(
-                "liforaHospitalName"
-            );
-
-
-        const savedLocation =
-            localStorage.getItem(
-                "liforaHospitalLocation"
-            );
-
-
-        const displayName =
-            getElement("displayContactName");
-
-
-        const displayPhone =
-            getElement("displayContactPhone");
-
-
-        const hospitalDisplay =
-            getElement("hospitalNameDisplay");
-
-
-        const locationDisplay =
-            getElement("hospitalLocationDisplay");
-
-
-        if (savedName && displayName) {
-
-            displayName.innerText =
-                savedName;
-
-        }
-
-
-        if (savedPhone && displayPhone) {
-
-            displayPhone.innerText =
-                savedPhone;
-
-        }
-
-
-        if (
-            savedHospital &&
-            hospitalDisplay
-        ) {
-
-            hospitalDisplay.innerText =
-                savedHospital;
-
-        }
-
-
-        if (
-            savedLocation &&
-            locationDisplay
-        ) {
-
-            locationDisplay.innerText =
-                savedLocation;
-
-        }
-
-
-        loadPatientInformation();
-
-    }
-);
