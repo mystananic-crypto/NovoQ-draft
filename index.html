@@ -1,2013 +1,593 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-
-    <meta name="viewport" 
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Lifora | Intelligent Emergency Healthcare</title>
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" 
-          rel="stylesheet">
-
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" 
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-    <!-- CSS File -->
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lifora India — Emergency Health ID Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
 </head>
-
-
 <body>
 
-    <!-- =========================
-         NAVIGATION BAR
-    ========================== -->
+<div class="grain"></div>
 
-    <header class="navbar">
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <a href="#top" class="logo">
+    <div class="logo-mark"><i class="fa-solid fa-heart-pulse"></i></div>
+    <span>Lifora <em>India</em></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#emergency">Emergency Triage</a></li>
+    <li><a href="#how-it-works">How it Works</a></li>
+    <li><a href="#dashboard">Hospital Console</a></li>
+    <li><a href="#profile">Health ID</a></li>
+    <li><a href="#simulation">Live Demo</a></li>
+    <li><a href="#team">Our Team</a></li>
+  </ul>
+  <button class="nav-cta" id="openNotifyModalNav"><i class="fa-solid fa-tower-broadcast"></i> Send SOS</button>
+  <button class="nav-burger" id="navBurger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
 
-        <div class="logo">
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-bg"><div class="hero-orb orb-a"></div><div class="hero-orb orb-b"></div><div class="hero-grid"></div></div>
+  <div class="hero-content">
+    <div class="status-badge"><span class="pulse-dot"></span> Built for Bharat's Emergency Response Network</div>
+    <h1>One scan away from <span>saving a life,</span> anywhere in India</h1>
+    <p>Lifora is a digital Emergency Health ID for India — paramedics scan a fingerprint, iris or Aadhaar-linked QR to instantly pull blood group, allergies and next-of-kin details, while hospitals and family are alerted in real time.</p>
+    <div class="hero-buttons">
+      <button class="primary-btn" id="heroScanBtn">Try Biometric Scan <i class="fa-solid fa-fingerprint"></i></button>
+      <button class="secondary-btn" id="heroRegisterBtn">Create My Health ID <i class="fa-solid fa-id-card-clip"></i></button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><h3>&lt;5s</h3><p>Biometric identification time</p></div>
+      <div class="stat"><h3>256-bit</h3><p>Encrypted data transmission</p></div>
+      <div class="stat"><h3>24×7</h3><p>Hospital &amp; ASHA dispatch network</p></div>
+    </div>
+  </div>
 
-            <div class="logo-icon">
-                <i class="fa-solid fa-heart-pulse"></i>
-            </div>
+  <div class="hero-visual">
+    <div class="id-card-3d" id="idCard3D">
+      <span class="id-card-sample-tag">LIVE DEMO PREVIEW</span>
+      <div class="id-card-face">
+        <div class="id-card-top">
+          <div><span class="id-country">🇮🇳 GOVT. LINKED HEALTH ID</span><strong>Lifora Emergency Card</strong></div>
+          <i class="fa-solid fa-shield-heart"></i>
+        </div>
+        <div class="id-card-scan">
+          <div class="id-card-scan-ring ring-1"></div>
+          <div class="id-card-scan-ring ring-2"></div>
+          <i class="fa-solid fa-fingerprint"></i>
+          <div class="id-card-scan-line"></div>
+        </div>
+        <div class="id-card-name masked" id="heroCardName">Scan to reveal identity</div>
+        <div class="id-card-row"><span>Health ID</span><strong>LIF-IN-••••-••••</strong></div>
+        <div class="id-card-row"><span>Blood Group</span><strong class="red-text" id="heroCardBlood">•• Positive</strong></div>
+        <div class="id-card-row"><span>Emergency No.</span><strong id="heroCardPhone">+91 ••••• •••••</strong></div>
+        <div class="id-card-chip"><i class="fa-solid fa-microchip"></i></div>
+      </div>
+    </div>
 
-            <span>Lifora</span>
+    <div class="floating-card emergency-float">
+      <div class="float-icon red-icon"><i class="fa-solid fa-route"></i></div>
+      <div><strong>108 Ambulance En Route</strong><p>Live GPS tracking active</p></div>
+    </div>
+    <div class="floating-card hospital-float">
+      <div class="float-icon blue-icon"><i class="fa-solid fa-bed-pulse"></i></div>
+      <div><strong>Trauma Bay Reserved</strong><p>Nearest empanelled hospital</p></div>
+    </div>
+  </div>
+</section>
 
+<!-- EMERGENCY TRIAGE -->
+<section class="emergency-section" id="emergency">
+  <div class="section-heading">
+    <div class="small-title">EMERGENCY TRIAGE</div>
+    <h2>Choose the <span>patient condition</span></h2>
+    <p>Tap a card to launch the matching triage protocol — each one is fully interactive and connects straight into the scan and Health ID workflow.</p>
+  </div>
+
+  <div class="condition-grid">
+    <div class="condition-card tilt-card" data-condition="critical">
+      <div class="condition-icon critical-icon"><i class="fa-solid fa-truck-fast"></i></div>
+      <span class="condition-tag">CRITICAL · LEVEL 1</span>
+      <h3>Unconscious / Trauma</h3>
+      <p>Patient can't respond. Identify them instantly through biometrics and pull their full Health ID.</p>
+      <ul>
+        <li><i class="fa-solid fa-check"></i> Fingerprint biometric scan</li>
+        <li><i class="fa-solid fa-check"></i> Iris recognition scan</li>
+        <li><i class="fa-solid fa-check"></i> Full Health ID auto-loaded</li>
+      </ul>
+      <button class="critical-btn" id="openCriticalScanBtn">Start Critical Scan <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+
+    <div class="condition-card tilt-card" data-condition="conscious">
+      <div class="condition-icon noncritical-icon"><i class="fa-solid fa-qrcode"></i></div>
+      <span class="condition-tag safe-tag">STANDARD · LEVEL 2</span>
+      <h3>Conscious / QR Verification</h3>
+      <p>Patient can present their Lifora Digital Health Card or Ayushman-style QR code.</p>
+      <ul>
+        <li><i class="fa-solid fa-check"></i> Instant QR code reader</li>
+        <li><i class="fa-solid fa-check"></i> Consent-verified access</li>
+        <li><i class="fa-solid fa-check"></i> Prescription &amp; allergy history</li>
+      </ul>
+      <button class="noncritical-btn" id="openQRScanBtn">Scan Health QR <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+
+    <div class="condition-card tilt-card" data-condition="dispatch">
+      <div class="condition-icon contact-icon"><i class="fa-solid fa-paper-plane"></i></div>
+      <span class="condition-tag notification-tag">ALERT SYSTEM</span>
+      <h3>Emergency Dispatch</h3>
+      <p>Notify family, the assigned hospital and the nearest trauma unit in one tap.</p>
+      <ul>
+        <li><i class="fa-solid fa-check"></i> Live GPS location shared</li>
+        <li><i class="fa-solid fa-check"></i> Automated SMS &amp; WhatsApp</li>
+        <li><i class="fa-solid fa-check"></i> Hospital pre-arrival notice</li>
+      </ul>
+      <button class="contact-btn" id="openNotifyModalBtn">Broadcast SOS <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how-it-works">
+  <div class="section-heading">
+    <div class="small-title">SYSTEM WORKFLOW</div>
+    <h2>How <span>Lifora responds</span></h2>
+    <p>A single connected protocol linking the patient, the paramedic and the hospital in seconds.</p>
+  </div>
+  <div class="workflow">
+    <div class="step"><div class="step-number">STEP 01</div><div class="step-icon"><i class="fa-solid fa-fingerprint"></i></div><h3>Biometric Scan</h3><p>Paramedic scans fingerprint or iris on-site, anywhere from Leh to Kanyakumari.</p></div>
+    <div class="workflow-line"></div>
+    <div class="step"><div class="step-number">STEP 02</div><div class="step-icon"><i class="fa-solid fa-database"></i></div><h3>Health ID Match</h3><p>Secure cloud retrieves blood group, allergies, conditions &amp; contacts.</p></div>
+    <div class="workflow-line"></div>
+    <div class="step"><div class="step-number">STEP 03</div><div class="step-icon"><i class="fa-solid fa-hospital-user"></i></div><h3>Hospital Alert</h3><p>Nearest empanelled hospital receives vitals before the ambulance arrives.</p></div>
+    <div class="workflow-line"></div>
+    <div class="step"><div class="step-number">STEP 04</div><div class="step-icon"><i class="fa-solid fa-heart-circle-check"></i></div><h3>Rapid Treatment</h3><p>Medical team is prepped with full history the moment the patient is wheeled in.</p></div>
+  </div>
+</section>
+
+<!-- HOSPITAL DASHBOARD -->
+<section class="hospital-dashboard-section" id="dashboard">
+  <div class="dashboard-container">
+    <div class="dashboard-heading">
+      <div><h2>Hospital <span>Trauma Console</span></h2><p>Live portal monitoring incoming admissions, biometric verifications and dispatch alerts.</p></div>
+      <div class="dashboard-live-status"><span class="dashboard-pulse"></span> Trauma Centre: Online</div>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="dashboard-card">
+        <div class="dashboard-card-title"><div class="dashboard-icon purple-dashboard-icon"><i class="fa-solid fa-hospital-bay"></i></div><div><h3>Facility Setup</h3><p>Active unit details</p></div></div>
+        <form class="dashboard-form" id="hospitalConfigForm">
+          <div class="form-group"><label>Hospital Name</label><div class="input-box"><i class="fa-solid fa-hospital"></i><input type="text" id="hospNameInput" value="Sanjivani Multispeciality Hospital"></div></div>
+          <div class="form-group"><label>Trauma Unit ID</label><div class="input-box"><i class="fa-solid fa-hashtag"></i><input type="text" id="hospUnitInput" value="ICU-BAY-04, Ahmedabad"></div></div>
+          <button type="submit" class="save-hospital-btn"><i class="fa-solid fa-floppy-disk"></i> Update Station Info</button>
+        </form>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="dashboard-card-title"><div class="dashboard-icon red-dashboard-icon"><i class="fa-solid fa-bolt"></i></div><div><h3>Fast Access Console</h3><p>Direct protocol trigger</p></div></div>
+        <div class="dashboard-access-buttons">
+          <button class="dashboard-access-btn critical-access" id="dashCriticalBtn"><div><i class="fa-solid fa-truck-medical"></i></div><span><strong>Critical Patient Scan</strong><small>Biometric triage protocol</small></span><i class="fa-solid fa-chevron-right"></i></button>
+          <button class="dashboard-access-btn noncritical-access" id="dashQRBtn"><div><i class="fa-solid fa-qrcode"></i></div><span><strong>Standard QR Verification</strong><small>Patient consent portal</small></span><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="dashboard-security"><i class="fa-solid fa-shield-halved"></i><span>DPDP Act compliant &amp; end-to-end encrypted.</span></div>
+      </div>
+
+      <div class="dashboard-card status-card">
+        <div class="dashboard-card-title"><div class="dashboard-icon yellow-dashboard-icon"><i class="fa-solid fa-list-check"></i></div><div><h3>Live Incoming Status</h3><p>Real-time response tracker</p></div></div>
+        <div class="status-list">
+          <div class="status-item"><div class="status-info"><span class="status-indicator success-status"></span><span>Biometric Verification</span></div><strong class="completed-status" id="dashBiometricStatus">VERIFIED</strong></div>
+          <div class="status-item"><div class="status-info"><span class="status-indicator waiting" id="dashAlertIndicator"></span><span>Emergency Dispatch Alert</span></div><strong id="dashAlertStatus">PENDING</strong></div>
+          <div class="status-item"><div class="status-info"><span class="status-indicator waiting" id="dashRoomIndicator"></span><span>Trauma Room Allocation</span></div><strong id="dashRoomStatus">STANDBY</strong></div>
+        </div>
+        <button class="dashboard-alert-btn" id="dashSendAlertBtn"><i class="fa-solid fa-triangle-exclamation"></i> Trigger SOS Broadcast</button>
+      </div>
+    </div>
+
+    <div class="dashboard-workflow-bar">
+      <div class="workflow-bar-item active-workflow"><div>01</div><span>Identification</span></div>
+      <div class="workflow-bar-line"></div>
+      <div class="workflow-bar-item" id="wfStep2"><div>02</div><span>Record Fetch</span></div>
+      <div class="workflow-bar-line"></div>
+      <div class="workflow-bar-item" id="wfStep3"><div>03</div><span>Trauma Alert</span></div>
+      <div class="workflow-bar-line"></div>
+      <div class="workflow-bar-item" id="wfStep4"><div>04</div><span>Admission Ready</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- EMERGENCY / HEALTH ID PROFILE -->
+<section class="emergency-profile-section" id="profile">
+  <div class="emergency-profile-container">
+    <div class="profile-section-heading">
+      <div><h2>Your Emergency <span>Health ID</span></h2><p>This is the record a paramedic sees the instant your biometrics are scanned.</p></div>
+      <div class="profile-security-badge"><i class="fa-solid fa-lock"></i> Health ID: <span id="profHealthId">LIF-IN-4821-0092</span></div>
+    </div>
+
+    <div class="emergency-profile-grid">
+      <div class="profile-main-card">
+        <div class="profile-card-top">
+          <div class="patient-profile-icon"><i class="fa-solid fa-user-check"></i></div>
+          <div><span>VERIFIED PATIENT</span><h3 id="profName">Rajesh Kumar Sharma</h3></div>
+          <div class="profile-verified"><i class="fa-solid fa-circle-check"></i> Active Record</div>
+        </div>
+        <div class="profile-divider"></div>
+        <div class="medical-information-grid">
+          <div class="medical-info-box blood-info"><div class="medical-info-icon"><i class="fa-solid fa-droplet"></i></div><div><span>BLOOD GROUP</span><strong id="profBlood">B Positive (B+)</strong></div></div>
+          <div class="medical-info-box allergy-info"><div class="medical-info-icon"><i class="fa-solid fa-wheat-awn-circle-exclamation"></i></div><div><span>SEVERE ALLERGIES</span><strong id="profAllergies">Penicillin, Groundnuts</strong></div></div>
+          <div class="medical-info-box history-info"><div class="medical-info-icon"><i class="fa-solid fa-notes-medical"></i></div><div><span>MEDICAL CONDITIONS</span><strong id="profConditions">Asthma, Type 2 Diabetes</strong></div></div>
+          <div class="medical-info-box medication-info"><div class="medical-info-icon"><i class="fa-solid fa-pills"></i></div><div><span>CURRENT MEDICATIONS</span><strong id="profMeds">Metformin, Salbutamol Inhaler</strong></div></div>
+        </div>
+        <div class="profile-warning"><i class="fa-solid fa-triangle-exclamation"></i><p><strong>Critical note:</strong> Severe reaction to Penicillin-based antibiotics. Use alternative antibacterial agents in trauma setting.</p></div>
+        <button class="edit-profile-btn" id="openFullFormBtn"><i class="fa-solid fa-pen-to-square"></i> Complete / Edit Full Health Profile</button>
+      </div>
+
+      <div class="emergency-contact-card">
+        <div class="contact-card-header"><div class="contact-icon"><i class="fa-solid fa-address-book"></i></div><div><span>PRIMARY CONTACT</span><h3>Emergency Kin</h3></div></div>
+        <div class="contact-information">
+          <div class="contact-row"><span><i class="fa-solid fa-user"></i> Full Name</span><strong id="contactName">Sunita Sharma (Spouse)</strong></div>
+          <div class="contact-row"><span><i class="fa-solid fa-phone"></i> Mobile Number</span><strong id="contactPhone">+91 98765 43210</strong></div>
+          <div class="contact-row"><span><i class="fa-solid fa-location-dot"></i> Nearest Hospital</span><strong id="contactHospital">Sanjivani Multispeciality Hospital</strong></div>
+        </div>
+        <button class="edit-contact-btn" id="openEditContactBtn"><i class="fa-solid fa-pen-to-square"></i> Edit Emergency Contact</button>
+        <button class="profile-notify-btn" id="notifyKinBtn"><i class="fa-solid fa-paper-plane"></i> Notify Contact Now</button>
+      </div>
+    </div>
+
+    <div class="hospital-location-card">
+      <div class="location-card-top">
+        <div><span class="location-label"><i class="fa-solid fa-location-arrow"></i> NEAREST TRAUMA FACILITY</span><h3>Sanjivani Multispeciality Hospital — Emergency Ward</h3></div>
+        <div class="location-status"><span></span> 2.6 km away (approx. 6 mins)</div>
+      </div>
+      <div class="location-map-placeholder">
+        <div class="map-grid"></div><div class="map-road road-one"></div><div class="map-road road-two"></div>
+        <div class="hospital-map-pin"><i class="fa-solid fa-hospital"></i></div>
+        <div class="map-location-text"><i class="fa-solid fa-location-dot"></i> Sector 21, Gandhinagar, Gujarat</div>
+      </div>
+    </div>
+
+    <div class="emergency-timeline">
+      <div class="timeline-heading"><h3><i class="fa-solid fa-clock-rotate-left"></i> Lifora Standard Emergency Timeline</h3><span>Expected duration: &lt;60 seconds</span></div>
+      <div class="timeline-steps">
+        <div class="timeline-step"><div class="timeline-number">01</div><h4>Biometric Scan</h4><p>Paramedic scans iris/fingerprint at the emergency site.</p></div>
+        <div class="timeline-arrow"><i class="fa-solid fa-angle-right"></i></div>
+        <div class="timeline-step"><div class="timeline-number">02</div><h4>Health ID Fetch</h4><p>Allergies &amp; critical history instantly loaded.</p></div>
+        <div class="timeline-arrow"><i class="fa-solid fa-angle-right"></i></div>
+        <div class="timeline-step"><div class="timeline-number">03</div><h4>Dispatcher Alert</h4><p>Hospital &amp; emergency kin notified via SMS &amp; cloud.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIMULATION -->
+<section class="simulation-section" id="simulation">
+  <div class="simulation-container">
+    <div class="simulation-heading">
+      <div><h2>Interactive <span>Emergency Simulation</span></h2><p>Walk through the full response lifecycle — patient scan, hospital alert, and family dispatch — right in your browser.</p></div>
+      <div class="simulation-live-badge"><span class="simulation-pulse"></span> Simulation Engine Ready</div>
+    </div>
+
+    <div class="simulation-card">
+      <div class="simulation-topbar">
+        <div class="simulation-case-info"><div class="simulation-case-icon"><i class="fa-solid fa-laptop-medical"></i></div><div><span>DEMO SCENARIO #0412</span><h3>Highway Trauma Dispatch — NH48</h3></div></div>
+        <div class="simulation-status waiting-status" id="simStatusBadge"><span></span> <span id="simStatusText">Ready to Begin</span></div>
+      </div>
+
+      <div class="simulation-progress">
+        <div class="simulation-progress-item active" id="simStep1Indicator"><div>1</div><span>Start Scenario</span></div>
+        <div class="simulation-progress-line" id="simLine1"></div>
+        <div class="simulation-progress-item" id="simStep2Indicator"><div>2</div><span>Patient Scan</span></div>
+        <div class="simulation-progress-line" id="simLine2"></div>
+        <div class="simulation-progress-item" id="simStep3Indicator"><div>3</div><span>Trauma Dispatch</span></div>
+        <div class="simulation-progress-line" id="simLine3"></div>
+        <div class="simulation-progress-item" id="simStep4Indicator"><div>4</div><span>Completed</span></div>
+      </div>
+
+      <div class="simulation-screen">
+        <div class="simulation-welcome" id="simStep1View">
+          <div class="simulation-main-icon"><i class="fa-solid fa-play"></i></div>
+          <span>EMERGENCY WORKFLOW TEST</span>
+          <h3>Simulate an Emergency Dispatch</h3>
+          <p>Click below to start a simulation covering patient triage, biometric recovery and emergency broadcasting.</p>
+          <button class="start-simulation-btn" id="startSimBtn">Begin Emergency Simulation <i class="fa-solid fa-arrow-right"></i></button>
         </div>
 
-
-        <nav class="nav-links">
-
-            <a href="#home">Home</a>
-
-            <a href="#how-it-works">How It Works</a>
-
-            <a href="#emergency">Emergency Access</a>
-
-            <a href="#about">About</a>
-
-            <a href="#developers">Our Team</a>
-
-        </nav>
-
-
-        <button class="nav-button"
-                onclick="document.getElementById('emergency').scrollIntoView()">
-
-            Emergency Access
-
-        </button>
-
-    </header>
-
-
-
-    <!-- =========================
-         HERO SECTION
-    ========================== -->
-
-    <section class="hero" id="home">
-
-
-        <!-- LEFT CONTENT -->
-
-        <div class="hero-content">
-
-            <div class="status-badge">
-
-                <span class="pulse-dot"></span>
-
-                Intelligent Emergency Healthcare
-
-            </div>
-
-
-            <h1>
-
-                Treatment Shouldn't Wait For
-
-                <span>Documentation.</span>
-
-            </h1>
-
-
-            <p>
-
-                Lifora is an intelligent emergency healthcare platform
-                designed to reduce delays in patient identification and
-                documentation.
-
-                For unconscious critical patients, Lifora enables secure
-                identification through biometrics and iris scanning.
-                For non-critical patients, medical details can be accessed
-                quickly through QR-based identification.
-
-            </p>
-
-
-            <div class="hero-buttons">
-
-                <button class="primary-btn"
-                        onclick="document.getElementById('emergency').scrollIntoView()">
-
-                    Get Emergency Access
-
-                    <i class="fa-solid fa-arrow-right"></i>
-
-                </button>
-
-
-                <button class="secondary-btn"
-                        onclick="document.getElementById('how-it-works').scrollIntoView()">
-
-                    How Lifora Works
-
-                    <i class="fa-solid fa-play"></i>
-
-                </button>
-
-            </div>
-
-
-            <!-- STATISTICS -->
-
-            <div class="hero-stats">
-
-                <div class="stat">
-
-                    <h3>Critical</h3>
-
-                    <p>Biometric & Iris Access</p>
-
-                </div>
-
-
-                <div class="stat">
-
-                    <h3>QR</h3>
-
-                    <p>Non-Critical Identification</p>
-
-                </div>
-
-
-                <div class="stat">
-
-                    <h3>Instant</h3>
-
-                    <p>Emergency Contact Alert</p>
-
-                </div>
-
-            </div>
-
+        <div class="simulation-choice" id="simStep2View" style="display:none;">
+          <span>STEP 2: PATIENT TRIAGE</span>
+          <h3>Select Triage Scan Type</h3>
+          <p>The 108 ambulance has reached the scene. Choose how to identify the patient:</p>
+          <div class="patient-choice-buttons">
+            <button class="patient-choice-btn critical-choice" id="simChooseBiometric">
+              <i class="fa-solid fa-fingerprint sim-choice-icon red-text"></i>
+              <strong>Unconscious Patient</strong>
+              <span>Use biometric fingerprint / iris scanner</span>
+            </button>
+            <button class="patient-choice-btn" id="simChooseQR">
+              <i class="fa-solid fa-qrcode sim-choice-icon blue-text"></i>
+              <strong>Conscious Patient</strong>
+              <span>Scan Lifora emergency QR code</span>
+            </button>
+          </div>
         </div>
 
-
-
-        <!-- RIGHT VISUAL -->
-
-        <div class="hero-visual">
-
-
-            <!-- MAIN CARD -->
-
-            <div class="patient-card">
-
-                <div class="card-top">
-
-                    <div class="live-status">
-
-                        <span class="live-dot"></span>
-
-                        Emergency System Active
-
-                    </div>
-
-                    <i class="fa-solid fa-shield-heart"></i>
-
-                </div>
-
-
-                <div class="medical-icon">
-
-                    <i class="fa-solid fa-heart-pulse"></i>
-
-                </div>
-
-
-                <h2>Secure. Fast. Lifesaving.</h2>
-
-
-                <p>
-
-                    Access essential patient information
-                    when every second matters.
-
-                </p>
-
-
-                <div class="patient-info">
-
-                    <div class="info-row">
-
-                        <i class="fa-solid fa-fingerprint"></i>
-
-                        <span>Biometric Verification</span>
-
-                        <i class="fa-solid fa-circle-check success"></i>
-
-                    </div>
-
-
-                    <div class="info-row">
-
-                        <i class="fa-solid fa-eye"></i>
-
-                        <span>Iris Recognition</span>
-
-                        <i class="fa-solid fa-circle-check success"></i>
-
-                    </div>
-
-
-                    <div class="info-row">
-
-                        <i class="fa-solid fa-qrcode"></i>
-
-                        <span>QR Medical Access</span>
-
-                        <i class="fa-solid fa-circle-check success"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- FLOATING EMERGENCY CARD -->
-
-            <div class="floating-card emergency-float">
-
-                <div class="float-icon red-icon">
-
-                    <i class="fa-solid fa-phone-volume"></i>
-
-                </div>
-
-
-                <div>
-
-                    <strong>Emergency Contact</strong>
-
-                    <p>Notified Instantly</p>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- FLOATING HOSPITAL CARD -->
-
-            <div class="floating-card hospital-float">
-
-                <div class="float-icon blue-icon">
-
-                    <i class="fa-solid fa-hospital"></i>
-
-                </div>
-
-
-                <div>
-
-                    <strong>Hospital Location</strong>
-
-                    <p>Shared with Family</p>
-
-                </div>
-
-            </div>
-
+        <div class="simulation-welcome" id="simStep3View" style="display:none;">
+          <div class="simulation-main-icon warn-icon"><i class="fa-solid fa-tower-broadcast"></i></div>
+          <span>STEP 3: BROADCASTING ALERTS</span>
+          <h3>Transmitting Vitals &amp; Emergency SOS</h3>
+          <p id="simDispatchText">Matching patient biometrics with Lifora Central Health Cloud...</p>
+          <div class="scan-progress sim-progress-wrap"><div class="scan-progress-bar" id="simProgressBar" style="width:0%;"></div></div>
         </div>
 
-    </section>
-
-
-
-    <!-- =========================
-         EMERGENCY ACCESS SECTION
-    ========================== -->
-
-    <section class="emergency-section" id="emergency">
-
-
-        <div class="section-heading">
-
-            <div class="small-title">
-
-                <span></span>
-
-                EMERGENCY IDENTIFICATION
-
-            </div>
-
-
-            <h2>
-
-                Choose the Patient
-
-                <span>Condition</span>
-
-            </h2>
-
-
-            <p>
-
-                Lifora provides different identification methods depending
-                on the patient's emergency condition.
-
-            </p>
-
+        <div class="simulation-welcome" id="simStep4View" style="display:none;">
+          <div class="simulation-main-icon success-icon"><i class="fa-solid fa-circle-check"></i></div>
+          <span>SIMULATION COMPLETE</span>
+          <h3>Patient Admitted &amp; Family Notified</h3>
+          <p>Sanjivani Hospital's trauma unit has received the patient record and allocated ER Bay 4. Emergency contacts received GPS coordinates.</p>
+          <button class="start-simulation-btn green-btn" id="resetSimBtn"><i class="fa-solid fa-rotate-right"></i> Run Another Simulation</button>
         </div>
-
-
-
-        <!-- PATIENT CONDITION CARDS -->
-
-        <div class="condition-grid">
-
-
-            <!-- CRITICAL PATIENT -->
-
-            <div class="condition-card critical-card interactive-condition" onclick="event.stopPropagation(); openCriticalPatient()">
-
-                <div class="condition-icon critical-icon">
-
-                    <i class="fa-solid fa-heart-crack"></i>
-
-                </div>
-
-
-                <div class="condition-tag">
-
-                    HIGH PRIORITY
-
-                </div>
-
-
-                <h3>Critical Patient</h3>
-
-
-                <p>
-
-                    For unconscious or unresponsive patients who
-                    cannot provide consent or medical information.
-
-                </p>
-
-
-                <ul>
-
-                    <li>
-
-                        <i class="fa-solid fa-fingerprint"></i>
-
-                        Biometric Identification
-
-                    </li>
-
-
-                    <li>
-
-                        <i class="fa-solid fa-eye"></i>
-
-                        Iris Scanner Verification
-
-                    </li>
-
-
-                    <li>
-
-                        <i class="fa-solid fa-file-medical"></i>
-
-                        Instant Medical Record Access
-
-                    </li>
-
-
-                    <li>
-
-                        <i class="fa-solid fa-bell"></i>
-
-                        Emergency Contact Notification
-
-                    </li>
-
-                </ul>
-
-
-                <button class="critical-btn"
-                        onclick="openCriticalPatient()">
-
-                    Critical Patient
-
-                    <i class="fa-solid fa-arrow-right"></i>
-
-                </button>
-
-            </div>
-
-
-
-            <!-- NON-CRITICAL PATIENT -->
-
-            <div class="condition-card noncritical-card interactive-condition" onclick="event.stopPropagation(); openNonCriticalPatient()">
-
-                <div class="condition-icon noncritical-icon">
-
-                    <i class="fa-solid fa-user-check"></i>
-
-                </div>
-
-
-                <div class="condition-tag safe-tag">
-
-                    QUICK ACCESS
-
-                </div>
-
-
-                <h3>Non-Critical Patient</h3>
-
-
-                <p>
-
-                    For conscious and stable patients who can be
-                    identified quickly using secure QR technology.
-
-                </p>
-
-
-                <ul>
-
-                    <li>
-
-                        <i class="fa-solid fa-qrcode"></i>
-
-                        QR-Based Identification
-
-                    </li>
-
-
-                    <li>
-
-                        <i class="fa-solid fa-file-medical"></i>
-
-                        Previous Medical Information
-
-                    </li>
-
-
-                    <li>
-
-                        <i class="fa-solid fa-notes-medical"></i>
-
-                        Faster Documentation
-
-                    </li>
-
-
-                    <li>
-
-                        <i class="fa-solid fa-clock"></i>
-
-                        Reduced Waiting Time
-
-                    </li>
-
-                </ul>
-
-
-                <button class="noncritical-btn"
-                        onclick="openNonCriticalPatient()">
-
-                    Non-Critical Patient
-
-                    <i class="fa-solid fa-arrow-right"></i>
-
-                </button>
-
-            </div>
-
-
-
-            <!-- EMERGENCY CONTACT -->
-
-            <div class="condition-card contact-card interactive-condition" onclick="event.stopPropagation(); notifyEmergencyContact()">
-
-                <div class="condition-icon contact-icon">
-
-                    <i class="fa-solid fa-bell"></i>
-
-                </div>
-
-
-                <div class="condition-tag notification-tag">
-
-                    AUTOMATED ALERT
-
-                </div>
-
-
-                <h3>Notify Emergency Contact</h3>
-
-
-                <p>
-
-                    Automatically inform the patient's emergency
-                    contact about their hospital admission and location.
-
-                </p>
-
-
-                <ul>
-
-                    <li>
-
-                        <i class="fa-solid fa-hospital"></i>
-
-                        Hospital Name
-
-                    </li>
-
-
-                    <li>
-
-                        <i class="fa-solid fa-location-dot"></i>
-
-                        Hospital Location
-
-                    </li>
-
-
-                    <li>
-
-                        <i class="fa-solid fa-phone"></i>
-
-                        Emergency Notification
-
-                    </li>
-
-
-                    <li>
-
-                        <i class="fa-solid fa-file-signature"></i>
-
-                        Written Consent Information
-
-                    </li>
-
-                </ul>
-
-
-                <button class="contact-btn"
-                        onclick="notifyEmergencyContact()">
-
-                    Notify Contact
-
-                    <i class="fa-solid fa-paper-plane"></i>
-
-                </button>
-
-            </div>
-
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =========================
-         HOW LIFORA WORKS
-    ========================== -->
-
-    <section class="how-section" id="how-it-works">
-
-
-        <div class="section-heading">
-
-            <div class="small-title">
-
-                <span></span>
-
-                SIMPLE EMERGENCY WORKFLOW
-
-            </div>
-
-
-            <h2>
-
-                From Emergency To
-
-                <span>Immediate Action.</span>
-
-            </h2>
-
-        </div>
-
-
-        <div class="workflow">
-
-
-            <div class="step">
-
-                <div class="step-number">01</div>
-
-                <div class="step-icon">
-
-                    <i class="fa-solid fa-truck-medical"></i>
-
-                </div>
-
-
-                <h3>Patient Arrives</h3>
-
-
-                <p>
-
-                    The patient reaches the emergency department
-                    and requires immediate medical attention.
-
-                </p>
-
-            </div>
-
-
-
-            <div class="workflow-line"></div>
-
-
-
-            <div class="step">
-
-                <div class="step-number">02</div>
-
-                <div class="step-icon">
-
-                    <i class="fa-solid fa-user-shield"></i>
-
-                </div>
-
-
-                <h3>Secure Identification</h3>
-
-
-                <p>
-
-                    Critical patients use biometric or iris scanning,
-                    while non-critical patients use QR identification.
-
-                </p>
-
-            </div>
-
-
-
-            <div class="workflow-line"></div>
-
-
-
-            <div class="step">
-
-                <div class="step-number">03</div>
-
-                <div class="step-icon">
-
-                    <i class="fa-solid fa-file-waveform"></i>
-
-                </div>
-
-
-                <h3>Medical Data Access</h3>
-
-
-                <p>
-
-                    Essential patient information and previous
-                    medical records become available quickly.
-
-                </p>
-
-            </div>
-
-
-
-            <div class="workflow-line"></div>
-
-
-
-            <div class="step">
-
-                <div class="step-number">04</div>
-
-                <div class="step-icon">
-
-                    <i class="fa-solid fa-bell"></i>
-
-                </div>
-
-
-                <h3>Family Is Notified</h3>
-
-
-                <p>
-
-                    The emergency contact receives the hospital
-                    name and location for written consent.
-
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =========================
-         ABOUT SECTION
-    ========================== -->
-
-    <section class="about-section" id="about">
-
-        <div class="about-content">
-
-            <div class="about-left">
-
-                <div class="small-title">
-
-                    <span></span>
-
-                    OUR PURPOSE
-
-                </div>
-
-
-                <h2>
-
-                    Every Second Saved
-
-                    <span>Can Save A Life.</span>
-
-                </h2>
-
-
-                <p>
-
-                    In emergencies, valuable time can be lost collecting
-                    patient details, identifying unconscious patients and
-                    waiting for documentation.
-
-                    Lifora aims to reduce this delay through intelligent
-                    identification and automated emergency communication.
-
-                </p>
-
-            </div>
-
-
-            <div class="purpose-box">
-
-                <i class="fa-solid fa-heart-pulse"></i>
-
-
-                <h3>
-
-                    Faster Identification.
-                    Faster Information.
-                    Faster Care.
-
-                </h3>
-
-            </div>
-
-        </div>
-
-    </section>
-
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM SECTION -->
+<section class="team-section" id="team">
+  <div class="section-heading">
+    <div class="small-title">THE TEAM BEHIND LIFORA</div>
+    <h2>Meet <span>our team</span></h2>
+    <p>The people designing, researching and building Lifora's emergency health platform for India.</p>
+  </div>
+
+  <div class="team-grid">
+    <div class="team-card tilt-card"><div class="team-avatar" style="--tc:#0F9D6B">PR</div><h3>Pravneer</h3><span class="team-role">UI/UX Designer</span><p>Shapes every screen so a scared paramedic can act in seconds, not minutes.</p></div>
+    <div class="team-card tilt-card"><div class="team-avatar" style="--tc:#FF9F43">BA</div><h3>Babita</h3><span class="team-role">Product Strategist</span><p>Defines what Lifora builds next and why it matters for Indian emergency care.</p></div>
+    <div class="team-card tilt-card"><div class="team-avatar" style="--tc:#3E7BFA">PT</div><h3>Priti</h3><span class="team-role">Project Manager</span><p>Keeps the team, timelines and stakeholders moving in the same direction.</p></div>
+    <div class="team-card tilt-card"><div class="team-avatar" style="--tc:#E43F3F">AE</div><h3>Aesha</h3><span class="team-role">Researcher</span><p>Studies real triage scenarios to make sure Lifora reflects how care actually happens.</p></div>
+    <div class="team-card tilt-card"><div class="team-avatar" style="--tc:#9B59F6">UR</div><h3>Urvashi</h3><span class="team-role">Documentation Lead</span><p>Turns the product into clear guides so hospitals can onboard without friction.</p></div>
+    <div class="team-card tilt-card"><div class="team-avatar" style="--tc:#14B8A6">PV</div><h3>Parvathy</h3><span class="team-role">Demo Coordinator</span><p>Runs the live walkthroughs that show Lifora working end-to-end.</p></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><div class="logo-mark"><i class="fa-solid fa-heart-pulse"></i></div><h2>Lifora India</h2></div>
+  <p>A prototype Emergency Health ID platform connecting patients, paramedics and hospitals across India with biometric speed.</p>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Lifora Healthcare Technologies · Prototype for demonstration purposes</span>
+    <span>DPDP Act aligned · Data stored locally on this device</span>
+  </div>
+</footer>
 
 <!-- =========================================
-     HOSPITAL DASHBOARD
+     MODALS
 ========================================= -->
 
-<section class="hospital-dashboard-section" id="hospital-dashboard">
-
-    <div class="dashboard-container">
-
-
-        <!-- DASHBOARD HEADER -->
-
-        <div class="dashboard-heading">
-
-            <div>
-
-                <div class="small-title">
-
-                    <span></span>
-
-                    AUTHORIZED HOSPITAL ACCESS
-
-                </div>
-
-
-                <h2>
-
-                    Emergency
-
-                    <span>Control Center</span>
-
-                </h2>
-
-
-                <p>
-
-                    A centralized Lifora dashboard designed to help
-                    hospital staff quickly identify patients, reduce
-                    documentation delays and notify emergency contacts.
-
-                </p>
-
-            </div>
-
-
-            <div class="dashboard-live-status">
-
-                <span class="dashboard-pulse"></span>
-
-                Lifora System Active
-
-            </div>
-
-        </div>
-
-
-
-        <!-- DASHBOARD GRID -->
-
-        <div class="dashboard-grid">
-
-
-            <!-- HOSPITAL DETAILS -->
-
-            <div class="dashboard-card hospital-details-card">
-
-                <div class="dashboard-card-title">
-
-                    <div class="dashboard-icon purple-dashboard-icon">
-
-                        <i class="fa-solid fa-hospital"></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <h3>Hospital Details</h3>
-
-                        <p>Information shared with emergency contacts</p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="dashboard-form">
-
-
-                    <div class="form-group">
-
-                        <label for="dashboardHospitalName">
-
-                            Hospital Name
-
-                        </label>
-
-
-                        <div class="input-box">
-
-                            <i class="fa-solid fa-hospital"></i>
-
-
-                            <input
-                                type="text"
-                                id="dashboardHospitalName"
-                                placeholder="Enter hospital name"
-                            >
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="form-group">
-
-                        <label for="dashboardHospitalLocation">
-
-                            Hospital Location
-
-                        </label>
-
-
-                        <div class="input-box">
-
-                            <i class="fa-solid fa-location-dot"></i>
-
-
-                            <input
-                                type="text"
-                                id="dashboardHospitalLocation"
-                                placeholder="Enter hospital location"
-                            >
-
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        class="save-hospital-btn"
-                        onclick="saveHospitalDetails()"
-                    >
-
-                        <i class="fa-solid fa-floppy-disk"></i>
-
-                        Save Hospital Details
-
-                    </button>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- PATIENT IDENTIFICATION -->
-
-            <div class="dashboard-card patient-access-card">
-
-                <div class="dashboard-card-title">
-
-                    <div class="dashboard-icon red-dashboard-icon">
-
-                        <i class="fa-solid fa-user-shield"></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <h3>Patient Identification</h3>
-
-                        <p>Select the appropriate emergency method</p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="dashboard-access-buttons">
-
-
-                    <button
-                        class="dashboard-access-btn critical-access"
-                        onclick="openCriticalPatient()"
-                    >
-
-                        <div>
-
-                            <i class="fa-solid fa-heart-pulse"></i>
-
-                        </div>
-
-
-                        <span>
-
-                            <strong>Critical Patient</strong>
-
-                            <small>
-                                Biometric or Iris Scanner
-                            </small>
-
-                        </span>
-
-
-                        <i class="fa-solid fa-arrow-right"></i>
-
-                    </button>
-
-
-
-                    <button
-                        class="dashboard-access-btn noncritical-access"
-                        onclick="openNonCriticalPatient()"
-                    >
-
-                        <div>
-
-                            <i class="fa-solid fa-qrcode"></i>
-
-                        </div>
-
-
-                        <span>
-
-                            <strong>Non-Critical Patient</strong>
-
-                            <small>
-                                Secure QR Identification
-                            </small>
-
-                        </span>
-
-
-                        <i class="fa-solid fa-arrow-right"></i>
-
-                    </button>
-
-                </div>
-
-
-                <div class="dashboard-security">
-
-                    <i class="fa-solid fa-lock"></i>
-
-                    <span>
-
-                        Access should be restricted to authorized
-                        healthcare personnel.
-
-                    </span>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- LIVE EMERGENCY STATUS -->
-
-            <div class="dashboard-card status-card">
-
-                <div class="dashboard-card-title">
-
-                    <div class="dashboard-icon yellow-dashboard-icon">
-
-                        <i class="fa-solid fa-chart-line"></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <h3>Emergency Status</h3>
-
-                        <p>Current identification workflow</p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="status-list">
-
-
-                    <div class="status-item">
-
-                        <div class="status-info">
-
-                            <span class="status-indicator waiting"></span>
-
-                            <span>Patient Identification</span>
-
-                        </div>
-
-
-                        <strong id="identificationStatus">
-
-                            Waiting
-
-                        </strong>
-
-                    </div>
-
-
-
-                    <div class="status-item">
-
-                        <div class="status-info">
-
-                            <span class="status-indicator waiting"></span>
-
-                            <span>Medical Information</span>
-
-                        </div>
-
-
-                        <strong id="medicalStatus">
-
-                            Not Accessed
-
-                        </strong>
-
-                    </div>
-
-
-
-                    <div class="status-item">
-
-                        <div class="status-info">
-
-                            <span class="status-indicator waiting"></span>
-
-                            <span>Emergency Contact</span>
-
-                        </div>
-
-
-                        <strong id="contactStatus">
-
-                            Pending
-
-                        </strong>
-
-                    </div>
-
-
-                </div>
-
-
-                <button
-                    class="dashboard-alert-btn"
-                    onclick="notifyEmergencyContact()"
-                >
-
-                    <i class="fa-solid fa-bell"></i>
-
-                    Notify Emergency Contact
-
-                </button>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- EMERGENCY WORKFLOW BAR -->
-
-        <div class="dashboard-workflow-bar">
-
-            <div class="workflow-bar-item active-workflow">
-
-                <div>01</div>
-
-                <span>Patient Arrives</span>
-
-            </div>
-
-
-            <div class="workflow-bar-line"></div>
-
-
-            <div class="workflow-bar-item">
-
-                <div>02</div>
-
-                <span>Identify Patient</span>
-
-            </div>
-
-
-            <div class="workflow-bar-line"></div>
-
-
-            <div class="workflow-bar-item">
-
-                <div>03</div>
-
-                <span>Access Information</span>
-
-            </div>
-
-
-            <div class="workflow-bar-line"></div>
-
-
-            <div class="workflow-bar-item">
-
-                <div>04</div>
-
-                <span>Notify Contact</span>
-
-            </div>
-
-        </div>
-
-
+<!-- 1. BIOMETRIC SCANNER MODAL -->
+<div class="lifora-modal" id="scannerModal">
+  <div class="modal-overlay"></div>
+  <div class="modal-box">
+    <button class="close-modal" id="closeScannerModal">&times;</button>
+    <div id="scannerSelectionView">
+      <div class="modal-header"><div class="modal-icon"><i class="fa-solid fa-fingerprint"></i></div><div><span>CRITICAL TRIAGE</span><h2>Biometric Patient Scan</h2></div></div>
+      <div class="critical-warning"><i class="fa-solid fa-triangle-exclamation"></i><div>Emergency mode: use biometrics when the patient is non-responsive or unable to provide identity.</div></div>
+      <h3>Select biometric scanner:</h3>
+      <div class="scan-options">
+        <button class="scan-option" id="selectFingerprintBtn"><div class="scan-option-icon"><i class="fa-solid fa-fingerprint"></i></div><div><strong>Fingerprint Recognition</strong><p>Fast optical thumb / index scan</p></div><i class="fa-solid fa-chevron-right"></i></button>
+        <button class="scan-option" id="selectIrisBtn"><div class="scan-option-icon iris"><i class="fa-solid fa-eye"></i></div><div><strong>Iris Biometric Scan</strong><p>High-accuracy ocular scanner</p></div><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+      <div class="security-note"><i class="fa-solid fa-shield-halved"></i><span>Encrypted hardware verification protocol active.</span></div>
     </div>
 
-</section>
-<section class="emergency-profile-section" id="emergency-profile">
-
-    <div class="emergency-profile-container">
-
-        <div class="profile-section-heading">
-
-            <div>
-
-                <div class="small-title">
-                    <span></span>
-                    EMERGENCY INFORMATION ACCESS
-                </div>
-
-                <h2>
-                    Patient
-                    <span>Emergency Profile</span>
-                </h2>
-
-                <p>
-                    Essential information can be reviewed quickly by
-                    authorized healthcare personnel after secure
-                    patient identification.
-                </p>
-
-            </div>
-
-            <div class="profile-security-badge">
-                <i class="fa-solid fa-shield-halved"></i>
-                Authorized Access Only
-            </div>
-
-        </div>
-
-
-        <div class="emergency-profile-grid">
-
-
-            <!-- PATIENT MEDICAL INFORMATION -->
-
-            <div class="profile-main-card">
-
-                <div class="profile-card-top">
-
-                    <div class="patient-profile-icon">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-
-                    <div>
-                        <span>IDENTIFIED PATIENT</span>
-                        <h3 id="profilePatientName">
-                            Patient Information
-                        </h3>
-                    </div>
-
-                    <div class="profile-verified">
-                        <i class="fa-solid fa-circle-check"></i>
-                        Verified
-                    </div>
-
-                </div>
-
-
-                <div class="profile-divider"></div>
-
-
-                <div class="medical-information-grid">
-
-
-                    <div class="medical-info-box blood-info">
-
-                        <div class="medical-info-icon">
-                            <i class="fa-solid fa-droplet"></i>
-                        </div>
-
-                        <div>
-                            <span>Blood Group</span>
-                            <strong id="patientBloodGroup">
-                                Not Available
-                            </strong>
-                        </div>
-
-                    </div>
-
-
-                    <div class="medical-info-box allergy-info">
-
-                        <div class="medical-info-icon">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                        </div>
-
-                        <div>
-                            <span>Allergies</span>
-                            <strong id="patientAllergies">
-                                Check Record
-                            </strong>
-                        </div>
-
-                    </div>
-
-
-                    <div class="medical-info-box history-info">
-
-                        <div class="medical-info-icon">
-                            <i class="fa-solid fa-file-medical"></i>
-                        </div>
-
-                        <div>
-                            <span>Medical History</span>
-                            <strong id="patientMedicalHistory">
-                                Available
-                            </strong>
-                        </div>
-
-                    </div>
-
-
-                    <div class="medical-info-box medication-info">
-
-                        <div class="medical-info-icon">
-                            <i class="fa-solid fa-pills"></i>
-                        </div>
-
-                        <div>
-                            <span>Current Medication</span>
-                            <strong id="patientMedication">
-                                Check Record
-                            </strong>
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="profile-warning">
-
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-
-                    <p>
-                        Emergency information shown in this prototype
-                        is intended for demonstration purposes.
-                        Actual access should require authentication,
-                        authorization and appropriate patient consent
-                        or legally permitted emergency access.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- EMERGENCY CONTACT -->
-
-            <div class="emergency-contact-card">
-
-                <div class="contact-card-header">
-
-                    <div class="contact-icon">
-                        <i class="fa-solid fa-phone-volume"></i>
-                    </div>
-
-                    <div>
-                        <span>REGISTERED CONTACT</span>
-                        <h3>Emergency Contact</h3>
-                    </div>
-
-                </div>
-
-
-                <div class="contact-information">
-
-
-                    <div class="contact-row">
-
-                        <span>
-                            <i class="fa-solid fa-user"></i>
-                            Contact Name
-                        </span>
-
-                        <strong id="emergencyContactName">
-                            Not Available
-                        </strong>
-
-                    </div>
-
-
-                    <div class="contact-row">
-
-                        <span>
-                            <i class="fa-solid fa-heart"></i>
-                            Relationship
-                        </span>
-
-                        <strong id="emergencyContactRelation">
-                            Not Available
-                        </strong>
-
-                    </div>
-
-
-                    <div class="contact-row">
-
-                        <span>
-                            <i class="fa-solid fa-phone"></i>
-                            Phone Number
-                        </span>
-
-                        <strong id="emergencyContactPhone">
-                            Not Available
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <button
-                    class="edit-contact-btn"
-                    onclick="openEmergencyContactForm()"
-                >
-
-                    <i class="fa-solid fa-pen"></i>
-
-                    Add / Edit Emergency Contact
-
-                </button>
-
-
-                <button
-                    class="profile-notify-btn"
-                    onclick="notifyEmergencyContact()"
-                >
-
-                    <i class="fa-solid fa-bell"></i>
-
-                    Notify Emergency Contact
-
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- QUICK EMERGENCY TIMELINE -->
-
-        <div class="emergency-timeline">
-
-            <div class="timeline-heading">
-
-                <h3>
-                    <i class="fa-solid fa-bolt"></i>
-                    Lifora Emergency Response Flow
-                </h3>
-
-                <span>Designed to reduce documentation delays</span>
-
-            </div>
-
-
-            <div class="timeline-steps">
-
-
-                <div class="timeline-step">
-
-                    <div class="timeline-number">
-                        01
-                    </div>
-
-                    <h4>Identify</h4>
-
-                    <p>
-                        Biometrics, iris scan or secure QR
-                        identification.
-                    </p>
-
-                </div>
-
-
-                <div class="timeline-arrow">
-                    <i class="fa-solid fa-arrow-right"></i>
-                </div>
-
-
-                <div class="timeline-step">
-
-                    <div class="timeline-number">
-                        02
-                    </div>
-
-                    <h4>Access</h4>
-
-                    <p>
-                        Retrieve essential emergency information.
-                    </p>
-
-                </div>
-
-
-                <div class="timeline-arrow">
-                    <i class="fa-solid fa-arrow-right"></i>
-                </div>
-
-
-                <div class="timeline-step">
-
-                    <div class="timeline-number">
-                        03
-                    </div>
-
-                    <h4>Notify</h4>
-
-                    <p>
-                        Share hospital name and location with
-                        the emergency contact.
-                    </p>
-
-                </div>
-
-
-                <div class="timeline-arrow">
-                    <i class="fa-solid fa-arrow-right"></i>
-                </div>
-
-
-                <div class="timeline-step">
-
-                    <div class="timeline-number">
-                        04
-                    </div>
-
-                    <h4>Consent</h4>
-
-                    <p>
-                        Emergency contact reaches the hospital
-                        for written consent.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
+    <div class="scanner-screen" id="fingerprintScanScreen" style="display:none;">
+      <div class="scanner-title"><span class="scanner-status-dot"></span> SCANNING FINGERPRINT</div>
+      <div class="fingerprint-scanner"><i class="fa-solid fa-fingerprint"></i><div class="scan-line"></div></div>
+      <h2>Place Finger On Sensor</h2>
+      <p>Maintain contact while Lifora searches encrypted health records...</p>
+      <div class="scan-progress"><div class="scan-progress-bar" id="fingerprintProgressBar"></div></div>
+      <span class="scan-percent" id="fingerprintPercentText">0%</span>
     </div>
 
-</section>
-    <!-- =========================================
-     PART 8 - LIVE EMERGENCY CASE SIMULATION
-========================================= -->
-
-<section class="simulation-section" id="simulation">
-
-    <div class="simulation-container">
-
-
-        <!-- HEADING -->
-
-        <div class="simulation-heading">
-
-            <div>
-
-                <div class="small-title">
-                    <span></span>
-                    LIVE LIFORA DEMONSTRATION
-                </div>
-
-                <h2>
-                    Experience the
-                    <span>Lifora Emergency Flow</span>
-                </h2>
-
-                <p>
-                    Simulate how Lifora can help reduce delays in
-                    emergency documentation by identifying the patient,
-                    accessing essential information and notifying the
-                    emergency contact.
-                </p>
-
-            </div>
-
-
-            <div class="simulation-live-badge">
-
-                <span class="simulation-pulse"></span>
-
-                Interactive Demo
-
-            </div>
-
-        </div>
-
-
-
-        <!-- MAIN SIMULATION CARD -->
-
-        <div class="simulation-card">
-
-
-            <!-- TOP BAR -->
-
-            <div class="simulation-topbar">
-
-                <div class="simulation-case-info">
-
-                    <div class="simulation-case-icon">
-
-                        <i class="fa-solid fa-truck-medical"></i>
-
-                    </div>
-
-                    <div>
-
-                        <span>EMERGENCY CASE</span>
-
-                        <h3 id="simulationCaseTitle">
-
-                            No Active Case
-
-                        </h3>
-
-                    </div>
-
-                </div>
-
-
-                <div class="simulation-status waiting-status"
-                     id="simulationStatus">
-
-                    <span></span>
-
-                    Waiting to Start
-
-                </div>
-
-            </div>
-
-
-
-            <!-- PROGRESS -->
-
-            <div class="simulation-progress">
-
-                <div class="simulation-progress-item active"
-                     id="simStep1">
-
-                    <div>1</div>
-
-                    <span>Start</span>
-
-                </div>
-
-
-                <div class="simulation-progress-line"
-                     id="simLine1">
-                </div>
-
-
-                <div class="simulation-progress-item"
-                     id="simStep2">
-
-                    <div>2</div>
-
-                    <span>Identify</span>
-
-                </div>
-
-
-                <div class="simulation-progress-line"
-                     id="simLine2">
-                </div>
-
-
-                <div class="simulation-progress-item"
-                     id="simStep3">
-
-                    <div>3</div>
-
-                    <span>Access</span>
-
-                </div>
-
-
-                <div class="simulation-progress-line"
-                     id="simLine3">
-                </div>
-
-
-                <div class="simulation-progress-item"
-                     id="simStep4">
-
-                    <div>4</div>
-
-                    <span>Notify</span>
-
-                </div>
-
-
-                <div class="simulation-progress-line"
-                     id="simLine4">
-                </div>
-
-
-                <div class="simulation-progress-item"
-                     id="simStep5">
-
-                    <div>5</div>
-
-                    <span>Consent</span>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- SIMULATION SCREEN -->
-
-            <div class="simulation-screen"
-                 id="simulationScreen">
-
-
-                <!-- DEFAULT SCREEN -->
-
-                <div class="simulation-welcome">
-
-                    <div class="simulation-main-icon">
-
-                        <i class="fa-solid fa-heart-pulse"></i>
-
-                    </div>
-
-
-                    <span>READY FOR DEMONSTRATION</span>
-
-
-                    <h3>
-                        Start a New Emergency Case
-                    </h3>
-
-
-                    <p>
-                        Select a patient condition to demonstrate how
-                        Lifora guides the emergency response workflow.
-                    </p>
-
-
-                    <button
-                        class="start-simulation-btn"
-                        onclick="startEmergencySimulation()"
-                    >
-
-                        <i class="fa-solid fa-play"></i>
-
-                        Start Emergency Case
-
-                    </button>
-
-                </div>
-
-
-            </div>
-
-        </div>
-
-
-        <!-- DEMO INFORMATION -->
-
-        <div class="simulation-info-box">
-
-            <div>
-
-                <i class="fa-solid fa-circle-info"></i>
-
-            </div>
-
-
-            <p>
-
-                <strong>Hackathon Demonstration:</strong>
-
-                This interactive simulation demonstrates the proposed
-                Lifora workflow. Real biometric, iris and QR systems
-                would require secure hardware integration, authentication
-                and healthcare data protection.
-
-            </p>
-
-        </div>
-
+    <div class="scanner-screen" id="irisScanScreen" style="display:none;">
+      <div class="scanner-title iris-title"><span class="scanner-status-dot"></span> SCANNING IRIS</div>
+      <div class="iris-scanner"><div class="iris-circle outer-circle"></div><div class="iris-circle middle-circle"></div><div class="iris-circle inner-circle"></div><i class="fa-solid fa-eye"></i><div class="iris-scan-line"></div></div>
+      <h2>Align Ocular Sensor</h2>
+      <p>Keep scanner 10–15cm from eyes for optic pattern matching...</p>
+      <div class="scan-progress"><div class="scan-progress-bar iris-progress" id="irisProgressBar"></div></div>
+      <span class="scan-percent" id="irisPercentText">0%</span>
     </div>
 
-</section>
-    <!-- =========================
-         DEVELOPERS SECTION
-    ========================== -->
-
-    <section class="developers-section" id="developers">
-
-
-        <div class="section-heading">
-
-            <div class="small-title">
-
-                <span></span>
-
-                THE MINDS BEHIND LIFORA
-
-            </div>
-
-
-            <h2>
-
-                Meet Our
-
-                <span>Development Team</span>
-
-            </h2>
-
+    <div class="success-screen" id="scanSuccessScreen" style="display:none;">
+      <div class="success-animation"><i class="fa-solid fa-check"></i></div>
+      <span class="verified-text">BIOMETRIC MATCH CONFIRMED</span>
+      <h2 id="scanSuccessHeadline">Patient Identified</h2>
+      <p id="scanSuccessSub">Emergency records loaded from the Lifora Health Cloud.</p>
+      <div class="patient-record-card" id="scanSuccessCard">
+        <div class="record-header"><i class="fa-solid fa-id-card"></i> Health ID #LIF-IN-4821-0092</div>
+        <div class="record-grid">
+          <div><span>PATIENT NAME</span><strong id="scanRecordName">Rajesh Kumar Sharma</strong></div>
+          <div><span>BLOOD GROUP</span><strong class="red-text" id="scanRecordBlood">B Positive (B+)</strong></div>
+          <div><span>CRITICAL ALLERGIES</span><strong class="amber-text" id="scanRecordAllergies">Penicillin, Groundnuts</strong></div>
+          <div><span>EMERGENCY CONTACT</span><strong id="scanRecordContact">Sunita Sharma (Spouse)</strong></div>
         </div>
+      </div>
+      <div class="scan-success-actions">
+        <button class="continue-btn" id="finishScanBtn">Load Full Health ID</button>
+        <button class="continue-btn ghost-btn" id="finishScanFormBtn">Open Full Information Form</button>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- 2. QR SCANNER MODAL -->
+<div class="lifora-modal" id="qrModal">
+  <div class="modal-overlay"></div>
+  <div class="modal-box">
+    <button class="close-modal" id="closeQRModal">&times;</button>
+    <div class="modal-header"><div class="modal-icon blue-modal-icon"><i class="fa-solid fa-qrcode"></i></div><div><span>STANDARD TRIAGE</span><h2>Lifora QR Reader</h2></div></div>
+    <p class="modal-description">Align the patient's Lifora Digital Health Card or mobile app QR code inside the viewfinder frame.</p>
+    <div class="qr-scanner-box">
+      <div class="qr-icon"><i class="fa-solid fa-qrcode"></i></div>
+      <div class="qr-corners"><span></span><span></span><span></span><span></span></div>
+      <div class="qr-scan-line"></div>
+    </div>
+    <button class="scan-qr-btn" id="simulateQRScanBtn"><i class="fa-solid fa-camera"></i> Simulate Camera Scan</button>
+  </div>
+</div>
 
-        <div class="developer-grid">
+<!-- 3. SOS NOTIFICATION MODAL -->
+<div class="lifora-modal" id="notifyModal">
+  <div class="modal-overlay"></div>
+  <div class="modal-box">
+    <button class="close-modal" id="closeNotifyModal">&times;</button>
+    <div id="notifyFormView">
+      <div class="notification-top"><div class="notification-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><span>EMERGENCY DISPATCH</span><h2>Broadcast SOS Alert</h2><p>Transmit live GPS coordinates to assigned contacts and the nearest trauma centre.</p></div>
+      <div class="notification-details">
+        <div class="notification-detail"><div class="detail-icon"><i class="fa-solid fa-hospital"></i></div><div><span>DESTINATION HOSPITAL</span><strong id="modalHospName">Sanjivani Multispeciality Hospital</strong></div></div>
+        <div class="notification-detail"><div class="detail-icon"><i class="fa-solid fa-user-shield"></i></div><div><span>PRIMARY CONTACT</span><strong id="modalContactName">Sunita Sharma (+91 98765 43210)</strong></div></div>
+      </div>
+      <div class="message-preview"><div class="message-title"><i class="fa-solid fa-comment-sms"></i> SMS Alert Preview</div><p>"[LIFORA SOS] Emergency medical alert for Rajesh Kumar Sharma. Ambulance dispatched to current location. Trauma ward notified."</p></div>
+      <button class="send-alert-btn" id="confirmSendAlertBtn"><i class="fa-solid fa-paper-plane"></i> Confirm &amp; Transmit SOS Alert</button>
+    </div>
+    <div class="success-screen" id="notifySuccessView" style="display:none;">
+      <div class="success-animation notification-success"><i class="fa-solid fa-check"></i></div>
+      <span class="verified-text amber-badge">BROADCAST TRANSMITTED</span>
+      <h2>Alert Sent Successfully</h2>
+      <p>Hospital trauma unit and primary contact have received the automated dispatch.</p>
+      <div class="alert-summary">
+        <div><i class="fa-solid fa-circle-check"></i> SMS dispatch sent</div>
+        <div><i class="fa-solid fa-circle-check"></i> GPS coordinates sent</div>
+        <div><i class="fa-solid fa-circle-check"></i> ER bed pre-allocated</div>
+      </div>
+      <button class="continue-btn amber-btn" id="closeNotifySuccessBtn">Return to Dashboard</button>
+    </div>
+  </div>
+</div>
 
+<!-- 4. FULL PATIENT INFORMATION FORM MODAL (A-E) -->
+<div class="lifora-modal" id="fullFormModal">
+  <div class="modal-overlay"></div>
+  <div class="modal-box wide-box">
+    <button class="close-modal" id="closeFullFormModal">&times;</button>
 
-            <div class="developer-card">
+    <div class="form-modal-header">
+      <div class="modal-icon green-modal-icon"><i class="fa-solid fa-file-medical"></i></div>
+      <div><span>HEALTH ID REGISTRATION</span><h2>Complete Patient Information</h2></div>
+    </div>
+    <p class="modal-description">This information is stored only on this device (local storage) and is shown to responders the moment your biometrics are scanned.</p>
 
-                <div class="developer-avatar">
+    <div class="form-tabs" id="formTabs">
+      <button class="form-tab active" data-tab="0"><span>A</span>Personal</button>
+      <button class="form-tab" data-tab="1"><span>B</span>Medical</button>
+      <button class="form-tab" data-tab="2"><span>C</span>Health Data</button>
+      <button class="form-tab" data-tab="3"><span>D</span>Contacts</button>
+      <button class="form-tab" data-tab="4"><span>E</span>Location &amp; ID</button>
+    </div>
 
-                    PK
-
-                </div>
-
-                <h3>Pravneer Kaur</h3>
-
-                <p>UI/UX Designer (Developer)</p>
-
-            </div>
-
-
-
-            <div class="developer-card">
-
-                <div class="developer-avatar">
-
-                    PP
-
-                </div>
-
-                <h3>Priti Patel</h3>
-
-                <p>Project Manager</p>
-
-            </div>
-
-
-
-            <div class="developer-card">
-
-                <div class="developer-avatar">
-
-                    AP
-
-                </div>
-
-                <h3>Aesha Patel</h3>
-
-                <p>Researcher</p>
-
-            </div>
-
-
-
-            <div class="developer-card">
-
-                <div class="developer-avatar">
-
-                    CB
-
-                </div>
-
-                <h3>Choudhary Babita</h3>
-
-                <p>Product Strategist</p>
-
-            </div>
-
-
-
-            <div class="developer-card">
-
-                <div class="developer-avatar">
-
-                    RU
-
-                </div>
-
-                <h3>Rathva Urvashi</h3>
-
-                <p>Documentation Lead</p>
-
-            </div>
-
-
-
-            <div class="developer-card">
-
-                <div class="developer-avatar">
-
-                    PJ
-
-                </div>
-
-                <h3>Parvathy J.S.</h3>
-
-                <p>Demo Coordinator</p>
-
-            </div>
-
+    <form id="patientInfoForm">
+      <!-- A. Personal Information -->
+      <div class="form-panel active" data-panel="0">
+        <h3 class="panel-title">A. Personal Information</h3>
+        <div class="form-grid">
+          <div class="form-group"><label>Full Name</label><input type="text" id="pFullName" placeholder="e.g. Rajesh Kumar Sharma" required></div>
+          <div class="form-group"><label>Place of Birth</label><input type="text" id="pPOB" placeholder="e.g. Ahmedabad, Gujarat"></div>
+          <div class="form-group dob-group"><label>Date of Birth</label>
+            <div class="dob-row"><input type="text" id="pDOBDay" maxlength="2" placeholder="DD"><input type="text" id="pDOBMonth" maxlength="2" placeholder="MM"><input type="text" id="pDOBYear" maxlength="4" placeholder="YYYY"></div>
+          </div>
+          <div class="form-group"><label>Gender</label>
+            <select id="pGender"><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select>
+          </div>
+          <div class="form-group"><label>Marital Status</label>
+            <select id="pStatus"><option value="Single">Single</option><option value="Married">Married</option><option value="Other">Other</option></select>
+          </div>
+          <div class="form-group"><label>Blood Group</label>
+            <select id="pBlood"><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select>
+          </div>
+          <div class="form-group"><label>Phone Number</label><div class="phone-input"><span>+91</span><input type="tel" id="pPhone" placeholder="98765 43210" maxlength="10"></div></div>
+          <div class="form-group"><label>City</label><input type="text" id="pCity" placeholder="e.g. Ahmedabad"></div>
+          <div class="form-group span-2"><label>Permanent Address</label><input type="text" id="pAddress" placeholder="House no., street, locality, state"></div>
+          <div class="form-group"><label>Postcode / PIN</label><input type="text" id="pPostcode" placeholder="e.g. 380015" maxlength="6"></div>
         </div>
+      </div>
 
-    </section>
+      <!-- B. Medical Information -->
+      <div class="form-panel" data-panel="1">
+        <h3 class="panel-title">B. Medical Information</h3>
+        <div class="form-grid">
+          <div class="form-group span-2"><label>Medical Conditions</label><textarea id="pConditions" placeholder="e.g. Asthma, Type 2 Diabetes"></textarea></div>
+          <div class="form-group span-2"><label>Allergies</label><textarea id="pAllergies" placeholder="e.g. Penicillin, Groundnuts"></textarea></div>
+          <div class="form-group span-2"><label>Current Medications</label><textarea id="pMeds" placeholder="e.g. Metformin, Salbutamol Inhaler"></textarea></div>
+          <div class="form-group span-2"><label>Previous Major Surgeries</label><textarea id="pSurgeries" placeholder="e.g. Appendectomy (2019)"></textarea></div>
+        </div>
+      </div>
 
+      <!-- C. Emergency Health Data -->
+      <div class="form-panel" data-panel="2">
+        <h3 class="panel-title">C. Emergency Health Data</h3>
+        <div class="form-grid">
+          <div class="form-group"><label>Height (cm)</label><input type="number" id="pHeight" placeholder="e.g. 172"></div>
+          <div class="form-group"><label>Weight (kg)</label><input type="number" id="pWeight" placeholder="e.g. 68"></div>
+          <div class="form-group"><label>Disabilities</label><input type="text" id="pDisability" placeholder="e.g. None"></div>
+          <div class="form-group"><label>Pregnancy Status</label>
+            <select id="pPregnancy"><option value="Not applicable">Not applicable</option><option value="Not pregnant">Not pregnant</option><option value="Pregnant">Pregnant</option><option value="Unsure">Unsure</option></select>
+          </div>
+        </div>
+      </div>
 
+      <!-- D. Emergency Contacts -->
+      <div class="form-panel" data-panel="3">
+        <h3 class="panel-title">D. Emergency Contacts</h3>
+        <div class="form-grid">
+          <div class="form-group"><label>Primary Emergency Contact</label><input type="text" id="pPrimaryName" placeholder="e.g. Sunita Sharma"></div>
+          <div class="form-group"><label>Relationship</label><input type="text" id="pPrimaryRel" placeholder="e.g. Spouse"></div>
+          <div class="form-group"><label>Mobile Number</label><div class="phone-input"><span>+91</span><input type="tel" id="pPrimaryPhone" placeholder="98765 43210" maxlength="10"></div></div>
+          <div class="form-group"><label>Secondary Emergency Contact</label><input type="text" id="pSecondaryName" placeholder="e.g. Anil Sharma"></div>
+          <div class="form-group"><label>Relationship</label><input type="text" id="pSecondaryRel" placeholder="e.g. Brother"></div>
+          <div class="form-group"><label>Mobile Number</label><div class="phone-input"><span>+91</span><input type="tel" id="pSecondaryPhone" placeholder="98765 43211" maxlength="10"></div></div>
+        </div>
+      </div>
 
-    <!-- =========================
-         FOOTER
-    ========================== -->
-
-    <footer>
-
-        <div class="footer-logo">
-
-            <div class="logo-icon">
-
-                <i class="fa-solid fa-heart-pulse"></i>
-
+      <!-- E. Location & Identification -->
+      <div class="form-panel" data-panel="4">
+        <h3 class="panel-title">E. Location &amp; Identification</h3>
+        <div class="form-grid">
+          <div class="form-group span-2">
+            <label>Live GPS Location</label>
+            <div class="gps-row">
+              <input type="text" id="pGPS" placeholder="Tap 'Detect' to capture live coordinates" readonly>
+              <button type="button" class="gps-btn" id="detectGPSBtn"><i class="fa-solid fa-location-crosshairs"></i> Detect</button>
             </div>
-
-            <h2>Lifora</h2>
-
+          </div>
+          <div class="form-group span-2"><label>Home Address</label><input type="text" id="pHomeAddress" placeholder="Same as permanent address, or different"></div>
+          <div class="form-group"><label>Aadhaar / PAN ID</label><input type="text" id="pAadhaar" placeholder="XXXX XXXX 1234" maxlength="14"></div>
+          <div class="form-group"><label>Medical Insurance Information</label><input type="text" id="pInsurance" placeholder="e.g. Ayushman Bharat / Star Health"></div>
         </div>
+        <div class="security-note"><i class="fa-solid fa-shield-halved"></i><span>Your Aadhaar/PAN is masked on-screen and saved only in this browser's local storage — never sent to a server.</span></div>
+      </div>
 
+      <div class="form-nav">
+        <button type="button" class="form-back-btn" id="formBackBtn" disabled><i class="fa-solid fa-arrow-left"></i> Back</button>
+        <div class="form-progress-dots" id="formProgressDots"></div>
+        <button type="button" class="form-next-btn" id="formNextBtn">Next <i class="fa-solid fa-arrow-right"></i></button>
+        <button type="submit" class="form-submit-btn" id="formSubmitBtn" style="display:none;"><i class="fa-solid fa-floppy-disk"></i> Save Health ID</button>
+      </div>
+    </form>
 
-        <p>
+    <!-- Save success -->
+    <div class="success-screen" id="formSuccessView" style="display:none;">
+      <div class="success-animation"><i class="fa-solid fa-check"></i></div>
+      <span class="verified-text">SAVED TO THIS DEVICE</span>
+      <h2>Health ID Updated</h2>
+      <p>Your full information has been saved locally and now powers the Health ID &amp; scan preview on this page.</p>
+      <button class="continue-btn" id="closeFullFormSuccessBtn">Done</button>
+    </div>
+  </div>
+</div>
 
-            Intelligent emergency healthcare.
-            Reducing delays when every second matters.
-
-        </p>
-
-
-        <div class="footer-bottom">
-
-            <span>
-
-                © 2026 Lifora. Developed for Smart India Hackathon.
-
-            </span>
-
-
-            <span>
-
-                Developed by Pravneer Kaur, Priti Patel,
-                Aesha Patel, Choudhary Babita,
-                Rathva Urvashi & Parvathy J.S.
-
-            </span>
-
-        </div>
-
-    </footer>
-
-
-
-    <!-- JAVASCRIPT FILE -->
-
-    <script src="script.js"></script>
-
+<script src="script.js"></script>
 </body>
-
 </html>
